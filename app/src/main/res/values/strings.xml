@@ -4,5 +4,14 @@
     <string name="app_name">Tabletop Roulette</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string-array name="games_array">
+        <item>Alhambra</item>
+        <item>Carcassonne</item>
+        <item>Castles of Burgundy</item>
+        <item>Chez Geek</item>
+        <item>Muchkin</item>
+        <item>Se7en Wonders</item>
+        <item>Splendor</item>
+    </string-array>
 
 </resources>
