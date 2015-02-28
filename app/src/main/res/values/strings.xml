@@ -16,5 +16,12 @@
         <item>Se7en Wonders</item>
         <item>Splendor</item>
     </string-array>
+    <string-array name="menu_array">
+        <item>Collection</item>
+        <item>Game Picker</item>
+        <item>Help</item>
+        <item>Sources</item>
+        <item>About Us</item>
+    </string-array>
 
 </resources>

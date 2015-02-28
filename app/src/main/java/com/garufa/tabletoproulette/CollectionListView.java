@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,10 +23,23 @@ import java.util.ArrayList;
  */
 public class CollectionListView extends Activity {
 
+    private DrawerLayout drawer_layout;
+    private ListView drawer_list;
+    private ActionBarDrawerToggle drawer_toggle;
+
+    private CharSequence drawer_title;
+    private CharSequence title;
+    private String[] menu_selections;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collection_layout);
+
+        // Set up the Slideout Drawer
+        setupDrawer();
+
+
 
         // Get the array for the listView
         Resources res = getResources();
@@ -57,7 +72,8 @@ public class CollectionListView extends Activity {
 
                 Toast.makeText(CollectionListView.this, gamePicked, Toast.LENGTH_SHORT).show();
 
-                Intent gameIntent = new Intent(CollectionListView.this, GameInfo.class);
+//                Intent gameIntent = new Intent(CollectionListView.this, GameInfo.class);
+                Intent gameIntent = new Intent(CollectionListView.this, MainActivity.class);
 
 //                gameIntent.putExtra("game", position);
                 startActivity(gameIntent);
@@ -69,6 +85,16 @@ public class CollectionListView extends Activity {
         });
     }
 
+    private void setupDrawer(){
+        title = drawer_title = getTitle();
+        menu_selections = getResources().getStringArray(R.array.menu_array);
+        drawer_layout   = (DrawerLayout) findViewById(R.id.collection_drawer_layout);
+        drawer_list     = (ListView) findViewById(R.id.collection_left_drawer);
+
+        drawer_list.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, menu_selections));
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

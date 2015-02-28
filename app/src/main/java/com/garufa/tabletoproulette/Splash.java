@@ -21,6 +21,7 @@ public class Splash extends Activity {
         Log.i(TAG, "Inside Splash");
 
         final Intent menuIntent = new Intent(Splash.this, CollectionListView.class);
+//        final Intent menuIntent = new Intent(Splash.this, MainActivity.class);
 
         // Keep this open until the time has expired and return to the quiz
         new Handler().postDelayed(new Runnable() {
