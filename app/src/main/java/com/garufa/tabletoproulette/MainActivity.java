@@ -1,5 +1,6 @@
 package com.garufa.tabletoproulette;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -8,10 +9,12 @@ import android.view.MenuItem;
 
 public class MainActivity extends ActionBarActivity {
 
+    private Intent intent;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.add_game_layout);
     }
 
 
@@ -30,8 +33,19 @@ public class MainActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+
+        switch (id){
+            case R.id.action_settings: return true;
+            case R.id.action_collection:
+                intent = new Intent(MainActivity.this, CollectionListView.class);
+                startActivity(intent); break;
+            case R.id.action_addGame:
+                intent = new Intent(MainActivity.this, MainActivity.class);
+                startActivity(intent);
+
         }
 
         return super.onOptionsItemSelected(item);

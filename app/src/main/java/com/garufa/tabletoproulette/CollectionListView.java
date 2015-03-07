@@ -1,9 +1,9 @@
 package com.garufa.tabletoproulette;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,7 +11,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,7 +18,9 @@ import java.util.ArrayList;
 /**
  * Created by Jason on 2/17/2015.
  */
-public class CollectionListView extends Activity {
+public class CollectionListView extends ActionBarActivity {
+
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,12 +45,12 @@ public class CollectionListView extends Activity {
         }
 
         // Set the ListView
-        ListView memoryTestListView = (ListView) findViewById(R.id.collectionListView);
-        memoryTestListView.setAdapter(arrayAdapter);
+        ListView collectionListView = (ListView) findViewById(R.id.collectionListView);
+        collectionListView.setAdapter(arrayAdapter);
 
 
         // Set the onClick event
-        memoryTestListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String gamePicked = "You selected " +
@@ -61,10 +62,6 @@ public class CollectionListView extends Activity {
 
 //                gameIntent.putExtra("game", position);
                 startActivity(gameIntent);
-//                if (position == 0){
-//                    Intent test1_intent = new Intent(MainActivity.this, QuizImage1.class);
-//                    startActivity(test1_intent);
-//                }
             }
         });
     }
@@ -85,8 +82,19 @@ public class CollectionListView extends Activity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        //        if (id == R.id.action_settings) {
+        //            return true;
+        //        }
+
+        switch (id){
+            case R.id.action_settings: return true;
+            case R.id.action_collection:
+                intent = new Intent(CollectionListView.this, CollectionListView.class);
+                startActivity(intent); break;
+            case R.id.action_addGame:
+                intent = new Intent(CollectionListView.this, AddGame.class);
+                startActivity(intent);
+
         }
 
         return super.onOptionsItemSelected(item);

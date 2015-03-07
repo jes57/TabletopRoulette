@@ -14,6 +14,8 @@
     <string name="add_string">Add</string>
     <string name="find_string">Find</string>
     <string name="delete_string">Delete</string>
+    <string name="action_collection">Collection</string>
+    <string name="action_add_game">Add Game</string>
     <string-array name="games_array">
         <item>Alhambra</item>
         <item>Carcassonne</item>
