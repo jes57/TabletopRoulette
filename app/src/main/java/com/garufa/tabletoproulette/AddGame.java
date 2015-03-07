@@ -17,6 +17,7 @@ public class AddGame extends ActionBarActivity {
     private Intent intent;
     private TextView idView;
     EditText nameEditText, descriptionEditText;
+    DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +31,10 @@ public class AddGame extends ActionBarActivity {
         idView = (TextView) findViewById(R.id.tvGameID);
         nameEditText = (EditText) findViewById(R.id.etGameName);
         descriptionEditText = (EditText) findViewById(R.id.etGameDesc);
+        dbHandler = new DBHandler(this, null, null, 1);
     }
 
     public void newGame (View view) {
-        DBHandler dbHandler = new DBHandler(this, null, null, 1);
 
         Game game = new Game(nameEditText.getText().toString(),
                 descriptionEditText.getText().toString());
@@ -43,7 +44,6 @@ public class AddGame extends ActionBarActivity {
         descriptionEditText.setText("");
     }
     public void lookupGame (View view) {
-        DBHandler dbHandler = new DBHandler(this, null, null, 1);
 
         Game game = dbHandler.findGame(nameEditText.getText().toString());
 
@@ -55,7 +55,7 @@ public class AddGame extends ActionBarActivity {
         }
     }
     public void removeGame (View view) {
-        DBHandler dbHandler = new DBHandler(this, null, null, 1);
+
         boolean result = dbHandler.deleteGame(nameEditText.getText().toString());
 
         if (result){

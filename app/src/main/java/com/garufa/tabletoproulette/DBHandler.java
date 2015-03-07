@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by Jason on 3/7/2015.
  */
@@ -28,7 +31,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_GAMES_TABLE = "CREATE TABLE "
                 + TABLE_GAMES + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY," + COLUMN_GAME_NAME
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_GAME_NAME
                 + " TEXT," + COLUMN_DESCRIPTION + " TEXT" + ")";
         db.execSQL(CREATE_GAMES_TABLE);
     }
@@ -97,4 +100,22 @@ public class DBHandler extends SQLiteOpenHelper {
         return result;
     }
 
+    public int getGameCount() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_GAMES, null);
+        cursor.close();
+
+        return cursor.getCount();
+    }
+
+    public Cursor getAllGames() {
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_GAMES + " ORDER BY "
+                + COLUMN_GAME_NAME, null);
+
+        if (cursor != null) {
+            cursor.moveToFirst();
+        }
+        return cursor;
+    }
 }

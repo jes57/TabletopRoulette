@@ -20,39 +20,17 @@ package com.garufa.tabletoproulette;
  */
 public class GameInfo extends ActionBarActivity {
 
+    ImageView game_image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.game_info_layout);
 
-        new DownloadImageTask((ImageView) findViewById(R.id.imageView_game_artwork)).execute("http://cf.geekdo-images.com/images/pic1904079_t.jpg");
+        game_image = (ImageView) findViewById(R.id.imageView_game_artwork);
+
+        new ImageLoadTask("http://cf.geekdo-images.com/images/pic1904079_t.jpg", game_image).execute();
     }
-
-    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        ImageView bmImage;
-
-        public DownloadImageTask(ImageView bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap mIcon11 = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                mIcon11 = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return mIcon11;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            bmImage.setImageBitmap(result);
-        }
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

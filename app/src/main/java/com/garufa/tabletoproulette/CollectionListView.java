@@ -2,6 +2,7 @@ package com.garufa.tabletoproulette;
 
 import android.content.Intent;
 import android.content.res.Resources;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -22,39 +23,58 @@ public class CollectionListView extends ActionBarActivity {
 
     private Intent intent;
 
+    String[] gamesArray;
+    ListView collectionListView;
+    ArrayList<String> gamesArrayList;
+    ArrayList<Game> gameObjectsArrayList;
+    DBHandler dbHandler;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collection_layout);
 
-        // Get the array for the listView
-        Resources res = getResources();
-        String[] gamesArray = res.getStringArray(R.array.games_array);
+        initialize();
+    }
 
-        // Assign the array to the listView
-        final ListAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.adapter_layout, gamesArray);
-
-        // Assign ArrayList
-        ArrayList<String> gamesArrayList = new ArrayList<String>();
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>( this,
-                R.layout.adapter_layout, R.id.textViewAdapter, gamesArrayList);
-
-        for (int i = 0; i < gamesArray.length; i++){
-            gamesArrayList.add(gamesArray[i]);
-        }
+    private void initialize() {
+        dbHandler = new DBHandler(this, null, null, 1);
+        Cursor cursor = dbHandler.getAllGames();
 
         // Set the ListView
-        ListView collectionListView = (ListView) findViewById(R.id.collectionListView);
-        collectionListView.setAdapter(arrayAdapter);
+        collectionListView = (ListView) findViewById(R.id.collectionListView);
+        GameCursorAdapter cursorAdapter = new GameCursorAdapter(this, cursor);
+        collectionListView.setAdapter(cursorAdapter);
 
 
+//        // Get the array for the listView
+//        Resources res = getResources();
+//        gamesArray = res.getStringArray(R.array.games_array);
+//
+//        // Assign the array to the listView
+//        final ListAdapter adapter = new ArrayAdapter<String>(this,
+//                R.layout.adapter_layout, gamesArray);
+//
+//        // Assign ArrayList
+//        gamesArrayList = new ArrayList<String>();
+//        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>( this,
+//                R.layout.adapter_layout, R.id.textViewAdapter, gamesArrayList);
+//
+//        for (int i = 0; i < gamesArray.length; i++){
+//            gamesArrayList.add(gamesArray[i]);
+//        }
+//
+//        // Set the ListView
+//        collectionListView = (ListView) findViewById(R.id.collectionListView);
+//        collectionListView.setAdapter(arrayAdapter);
+//
+//
         // Set the onClick event
         collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String gamePicked = "You selected " +
-                        String.valueOf(parent.getItemAtPosition(position));
+                        String.valueOf(parent.getId());
 
                 Toast.makeText(CollectionListView.this, gamePicked, Toast.LENGTH_SHORT).show();
 
@@ -65,7 +85,6 @@ public class CollectionListView extends ActionBarActivity {
             }
         });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
