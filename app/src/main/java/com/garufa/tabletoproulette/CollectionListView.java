@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,37 +22,43 @@ import java.util.ArrayList;
 /**
  * Created by Jason on 2/17/2015.
  */
-public class CollectionListView extends Activity {
+public class CollectionListView extends ActionBarActivity {
+    public final static int COLLECTION_SCREEN = 0, GAME_PICKER = 1, HELP = 2, SOURCES = 3,
+            ABOUT = 4;
 
     private DrawerLayout drawer_layout;
-    private ListView drawer_list;
+    private ListView drawer_list, memoryTestListView;
     private ActionBarDrawerToggle drawer_toggle;
 
     private CharSequence drawer_title;
     private CharSequence title;
-    private String[] menu_selections;
+    private String[] menu_selections, gamesArray;
+
+    private ListAdapter adapter;
+    private ArrayList<String> gamesArrayList;
+    private ArrayAdapter<String> arrayAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collection_layout);
 
-        // Set up the Slideout Drawer
         setupDrawer();
+        setupListView();
+    }
 
-
-
+    private void setupListView() {
         // Get the array for the listView
         Resources res = getResources();
-        String[] gamesArray = res.getStringArray(R.array.games_array);
+        gamesArray = res.getStringArray(R.array.games_array);
 
         // Assign the array to the listView
-        final ListAdapter adapter = new ArrayAdapter<String>(this,
+        adapter = new ArrayAdapter<String>(this,
                 R.layout.adapter_layout, gamesArray);
 
         // Assign ArrayList
-        ArrayList<String> gamesArrayList = new ArrayList<String>();
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>( this,
+        gamesArrayList = new ArrayList<String>();
+        arrayAdapter = new ArrayAdapter<String>( this,
                 R.layout.adapter_layout, R.id.textViewAdapter, gamesArrayList);
 
         for (int i = 0; i < gamesArray.length; i++){
@@ -59,7 +66,7 @@ public class CollectionListView extends Activity {
         }
 
         // Set the ListView
-        ListView memoryTestListView = (ListView) findViewById(R.id.collectionListView);
+        memoryTestListView = (ListView) findViewById(R.id.collectionListView);
         memoryTestListView.setAdapter(arrayAdapter);
 
 
@@ -72,8 +79,7 @@ public class CollectionListView extends Activity {
 
                 Toast.makeText(CollectionListView.this, gamePicked, Toast.LENGTH_SHORT).show();
 
-//                Intent gameIntent = new Intent(CollectionListView.this, GameInfo.class);
-                Intent gameIntent = new Intent(CollectionListView.this, MainActivity.class);
+                Intent gameIntent = new Intent(CollectionListView.this, GameInfo.class);
 
 //                gameIntent.putExtra("game", position);
                 startActivity(gameIntent);
@@ -89,11 +95,79 @@ public class CollectionListView extends Activity {
         title = drawer_title = getTitle();
         menu_selections = getResources().getStringArray(R.array.menu_array);
         drawer_layout   = (DrawerLayout) findViewById(R.id.collection_drawer_layout);
+        drawer_toggle   = new ActionBarDrawerToggle(this, drawer_layout,
+                R.string.drawer_open, R.string.drawer_close){
+
+            public void onDrawerClosed(View view){
+                super.onDrawerClosed(view);
+                getActionBar().setTitle(title);
+                invalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView){
+                super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(drawer_title);
+                invalidateOptionsMenu();
+            }
+        };
+
         drawer_list     = (ListView) findViewById(R.id.collection_left_drawer);
 
         drawer_list.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, menu_selections));
 
+        // Set the list's click listener
+        drawer_list.setOnItemClickListener(new DrawerItemClickListener());
+
+        // enable ActionBar app icon to behave as action to toggle nav drawer
+//        getActionBar().setDisplayHomeAsUpEnabled(true);
+//        getActionBar().setHomeButtonEnabled(true);
+
+        // ActionBarDrawerToggle ties together the proper interactions
+        // between the sliding drawer and the action bar app icon
+
+    }
+
+    private class DrawerItemClickListener implements ListView.OnItemClickListener{
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent gameIntent;
+
+            String gamePicked = "You selected " +
+                    String.valueOf(parent.getItemAtPosition(position));
+
+            Toast.makeText(CollectionListView.this, gamePicked, Toast.LENGTH_SHORT).show();
+            switch (position){
+                case COLLECTION_SCREEN:
+                    gameIntent = new Intent(CollectionListView.this, CollectionListView.class);
+                    drawer_layout.closeDrawer(drawer_list);
+                    break;
+                case GAME_PICKER:
+                    gameIntent = new Intent(CollectionListView.this, CollectionListView.class);
+                    drawer_layout.closeDrawer(drawer_list);
+                    break;
+                case HELP:
+                    gameIntent = new Intent(CollectionListView.this, CollectionListView.class);
+                    drawer_layout.closeDrawer(drawer_list);
+                    break;
+                case SOURCES:
+                    gameIntent = new Intent(CollectionListView.this, CollectionListView.class);
+                    drawer_layout.closeDrawer(drawer_list);
+                    break;
+                case ABOUT:
+                    gameIntent = new Intent(CollectionListView.this, CollectionListView.class);
+                    drawer_layout.closeDrawer(drawer_list);
+                    break;
+                default:
+                    gameIntent = new Intent(CollectionListView.this, CollectionListView.class);
+                    drawer_layout.closeDrawer(drawer_list);
+                    break;
+            }
+
+//                gameIntent.putExtra("game", position);
+            startActivity(gameIntent);
+            CollectionListView.this.finish();
+        }
     }
 
     @Override
