@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "collectionDB.db";
     private static final String TABLE_GAMES   = "games";
 
@@ -27,6 +27,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_MAX_PLAY_TIME = "max_play_time";
     public static final String COLUMN_IMAGE_URL     = "image_url";
     public static final String COLUMN_GAME_MECHANIC = "game_mechanic";
+    public static final String COLUMN_BGG_ID = "bgg_id";
 
     public DBHandler(Context context, String name,
                      SQLiteDatabase.CursorFactory factory, int version) {
@@ -38,6 +39,7 @@ public class DBHandler extends SQLiteOpenHelper {
         String CREATE_GAMES_TABLE = "CREATE TABLE " + TABLE_GAMES + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_GAME_NAME + " TEXT,"
+                + COLUMN_BGG_ID + " INTEGER,"
                 + COLUMN_MIN_PLAYERS + " INTEGER,"
                 + COLUMN_MAX_PLAYERS + " INTEGER,"
                 + COLUMN_MIN_PLAY_TIME + " INTEGER,"
@@ -57,6 +59,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public void addGame(Game game){
         ContentValues values = new ContentValues();
         values.put(COLUMN_GAME_NAME, game.get_name());
+        values.put(COLUMN_BGG_ID, game.get_bgg_id());
         values.put(COLUMN_DESCRIPTION, game.get_description());
         values.put(COLUMN_MIN_PLAYERS, game.get_min_players());
         values.put(COLUMN_MAX_PLAYERS, game.get_max_players());
@@ -85,13 +88,14 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             game.set_id(Integer.parseInt(cursor.getString(0)));
             game.set_name(cursor.getString(1));
-            game.set_min_players(Integer.parseInt(cursor.getString(2)));
-            game.set_max_players(Integer.parseInt(cursor.getString(3)));
-            game.set_min_play_time(Integer.parseInt(cursor.getString(4)));
-            game.set_max_play_time(Integer.parseInt(cursor.getString(5)));
-            game.set_description(cursor.getString(6));
-            game.set_game_mechanic(cursor.getString(7));
-            game.set_image_url(cursor.getString(8));
+            game.set_bgg_id(Integer.parseInt(cursor.getString(2)));
+            game.set_min_players(Integer.parseInt(cursor.getString(3)));
+            game.set_max_players(Integer.parseInt(cursor.getString(4)));
+            game.set_min_play_time(Integer.parseInt(cursor.getString(5)));
+            game.set_max_play_time(Integer.parseInt(cursor.getString(6)));
+            game.set_description(cursor.getString(7));
+            game.set_game_mechanic(cursor.getString(8));
+            game.set_image_url(cursor.getString(9));
             cursor.close();
         } else {
             game = null;
