@@ -95,7 +95,10 @@ public class AddGame extends ActionBarActivity {
                 startActivity(intent); break;
             case R.id.action_addGame:
                 intent = new Intent(AddGame.this, AddGame.class);
-                startActivity(intent);
+                startActivity(intent); break;
+            case R.id.action_mainActivity:
+                intent = new Intent(AddGame.this, MainActivity.class);
+                startActivity(intent); break;
 
         }
 

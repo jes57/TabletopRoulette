@@ -34,8 +34,9 @@
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:id="@+id/textView_description"
                 android:padding="10dp"
-                android:text="@string/splendor_description"/>
+                android:text="@string/not_assigned_string"/>
 
             </LinearLayout>
 

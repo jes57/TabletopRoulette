@@ -14,13 +14,19 @@ import java.util.List;
  */
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "collectionDB.db";
     private static final String TABLE_GAMES   = "games";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_GAME_NAME = "game_name";
     public static final String COLUMN_DESCRIPTION = "description";
+    public static final String COLUMN_MIN_PLAYERS = "min_players";
+    public static final String COLUMN_MAX_PLAYERS = "max_players";
+    public static final String COLUMN_MIN_PLAY_TIME = "min_play_time";
+    public static final String COLUMN_MAX_PLAY_TIME = "max_play_time";
+    public static final String COLUMN_IMAGE_URL     = "image_url";
+    public static final String COLUMN_GAME_MECHANIC = "game_mechanic";
 
     public DBHandler(Context context, String name,
                      SQLiteDatabase.CursorFactory factory, int version) {
@@ -29,10 +35,16 @@ public class DBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_GAMES_TABLE = "CREATE TABLE "
-                + TABLE_GAMES + "("
-                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT," + COLUMN_GAME_NAME
-                + " TEXT," + COLUMN_DESCRIPTION + " TEXT" + ")";
+        String CREATE_GAMES_TABLE = "CREATE TABLE " + TABLE_GAMES + "("
+                + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + COLUMN_GAME_NAME + " TEXT,"
+                + COLUMN_MIN_PLAYERS + " INTEGER,"
+                + COLUMN_MAX_PLAYERS + " INTEGER,"
+                + COLUMN_MIN_PLAY_TIME + " INTEGER,"
+                + COLUMN_MAX_PLAY_TIME + " INTEGER,"
+                + COLUMN_DESCRIPTION + " TEXT,"
+                + COLUMN_GAME_MECHANIC + " TEXT,"
+                + COLUMN_IMAGE_URL + " TEXT" + ")";
         db.execSQL(CREATE_GAMES_TABLE);
     }
 
@@ -46,6 +58,12 @@ public class DBHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(COLUMN_GAME_NAME, game.get_name());
         values.put(COLUMN_DESCRIPTION, game.get_description());
+        values.put(COLUMN_MIN_PLAYERS, game.get_min_players());
+        values.put(COLUMN_MAX_PLAYERS, game.get_max_players());
+        values.put(COLUMN_MIN_PLAY_TIME, game.get_min_play_time());
+        values.put(COLUMN_MAX_PLAY_TIME, game.get_max_play_time());
+        values.put(COLUMN_GAME_MECHANIC, game.get_game_mechanic());
+        values.put(COLUMN_IMAGE_URL, game.get_image_url());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -67,7 +85,13 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             game.set_id(Integer.parseInt(cursor.getString(0)));
             game.set_name(cursor.getString(1));
-            game.set_description(cursor.getString(2));
+            game.set_min_players(Integer.parseInt(cursor.getString(2)));
+            game.set_max_players(Integer.parseInt(cursor.getString(3)));
+            game.set_min_play_time(Integer.parseInt(cursor.getString(4)));
+            game.set_max_play_time(Integer.parseInt(cursor.getString(5)));
+            game.set_description(cursor.getString(6));
+            game.set_game_mechanic(cursor.getString(7));
+            game.set_image_url(cursor.getString(8));
             cursor.close();
         } else {
             game = null;

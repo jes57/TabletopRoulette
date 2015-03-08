@@ -7,4 +7,6 @@
         android:orderInCategory="110" app:showAsAction="never" />
     <item android:id="@+id/action_addGame" android:title="@string/action_add_game"
         android:orderInCategory="110" app:showAsAction="never" />
+    <item android:id="@+id/action_mainActivity" android:title="@string/test_activity_string"
+        android:orderInCategory="110" app:showAsAction="never" />
 </menu>

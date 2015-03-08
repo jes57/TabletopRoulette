@@ -101,9 +101,9 @@ public class CollectionListView extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        //        if (id == R.id.action_settings) {
-        //            return true;
-        //        }
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
 
         switch (id){
             case R.id.action_settings: return true;
@@ -112,7 +112,10 @@ public class CollectionListView extends ActionBarActivity {
                 startActivity(intent); break;
             case R.id.action_addGame:
                 intent = new Intent(CollectionListView.this, AddGame.class);
-                startActivity(intent);
+                startActivity(intent); break;
+            case R.id.action_mainActivity:
+                intent = new Intent(CollectionListView.this, MainActivity.class);
+                startActivity(intent); break;
 
         }
 

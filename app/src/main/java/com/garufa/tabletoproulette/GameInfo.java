@@ -1,5 +1,6 @@
 package com.garufa.tabletoproulette;
 
+        import android.content.Intent;
         import android.graphics.Bitmap;
         import android.graphics.BitmapFactory;
         import android.os.AsyncTask;
@@ -20,6 +21,7 @@ package com.garufa.tabletoproulette;
  */
 public class GameInfo extends ActionBarActivity {
 
+    private Intent intent;
     ImageView game_image;
 
     @Override
@@ -47,8 +49,22 @@ public class GameInfo extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+
+        switch (id){
+            case R.id.action_settings: return true;
+            case R.id.action_collection:
+                intent = new Intent(GameInfo.this, CollectionListView.class);
+                startActivity(intent); break;
+            case R.id.action_addGame:
+                intent = new Intent(GameInfo.this, AddGame.class);
+                startActivity(intent); break;
+            case R.id.action_mainActivity:
+                intent = new Intent(GameInfo.this, MainActivity.class);
+                startActivity(intent); break;
+
         }
 
         return super.onOptionsItemSelected(item);

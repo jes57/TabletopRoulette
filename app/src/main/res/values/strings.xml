@@ -16,6 +16,9 @@
     <string name="delete_string">Delete</string>
     <string name="action_collection">Collection</string>
     <string name="action_add_game">Add Game</string>
+    <string name="test_activity_string">Testing Activity</string>
+    <string name="connection_error">Failed to connect to URL</string>
+    <string name="xml_error">Error parsing XML</string>
     <string-array name="games_array">
         <item>Alhambra</item>
         <item>Carcassonne</item>
