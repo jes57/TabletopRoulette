@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "collectionDB.db";
     private static final String TABLE_GAMES   = "games";
 
@@ -28,6 +28,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_IMAGE_URL     = "image_url";
     public static final String COLUMN_GAME_MECHANIC = "game_mechanic";
     public static final String COLUMN_BGG_ID = "bgg_id";
+    public static final String COLUMN_RATING = "rating";
 
     public DBHandler(Context context, String name,
                      SQLiteDatabase.CursorFactory factory, int version) {
@@ -38,14 +39,15 @@ public class DBHandler extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_GAMES_TABLE = "CREATE TABLE " + TABLE_GAMES + "("
                 + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_GAME_NAME + " TEXT,"
-                + COLUMN_BGG_ID + " INTEGER,"
+                + COLUMN_GAME_NAME + " TEXT UNIQUE,"
+                + COLUMN_BGG_ID + " INTEGER UNIQUE,"
                 + COLUMN_MIN_PLAYERS + " INTEGER,"
                 + COLUMN_MAX_PLAYERS + " INTEGER,"
                 + COLUMN_MIN_PLAY_TIME + " INTEGER,"
                 + COLUMN_MAX_PLAY_TIME + " INTEGER,"
                 + COLUMN_DESCRIPTION + " TEXT,"
                 + COLUMN_GAME_MECHANIC + " TEXT,"
+                + COLUMN_RATING + " DECIMAL(3,2),"
                 + COLUMN_IMAGE_URL + " TEXT" + ")";
         db.execSQL(CREATE_GAMES_TABLE);
     }
@@ -66,6 +68,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_MIN_PLAY_TIME, game.get_min_play_time());
         values.put(COLUMN_MAX_PLAY_TIME, game.get_max_play_time());
         values.put(COLUMN_GAME_MECHANIC, game.get_game_mechanic());
+        values.put(COLUMN_RATING, game.get_rating());
         values.put(COLUMN_IMAGE_URL, game.get_image_url());
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -95,7 +98,8 @@ public class DBHandler extends SQLiteOpenHelper {
             game.set_max_play_time(Integer.parseInt(cursor.getString(6)));
             game.set_description(cursor.getString(7));
             game.set_game_mechanic(cursor.getString(8));
-            game.set_image_url(cursor.getString(9));
+            game.set_rating(Double.parseDouble(cursor.getString(9)));
+            game.set_image_url(cursor.getString(10));
             cursor.close();
         } else {
             game = null;

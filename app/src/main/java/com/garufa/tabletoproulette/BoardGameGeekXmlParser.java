@@ -54,6 +54,7 @@ public class BoardGameGeekXmlParser {
         parser.require(XmlPullParser.START_TAG, ns, "boardgame");
         int bgg_id = 0, min_players = 0, max_players = 0, min_play_time = 0, max_play_time = 0;
         String name = "Splendor", description = null, game_mechanic = null, image_url = null;
+        double rating = 0;
 
         bgg_id = Integer.parseInt(parser.getAttributeValue(ns, "objectid"));
 
@@ -76,13 +77,61 @@ public class BoardGameGeekXmlParser {
                 case "maxplaytime": max_play_time = readMaxPlayTime(parser); break;
                 case "description": description = readDescription(parser); break;
                 case "boardgamemechanic": game_mechanic = readGameMechanic(parser); break;
+                case "statistics": rating = readStats(parser); break;
                 case "thumbnail": image_url = readImageUrl(parser);
                     image_url = "http:" + image_url; break;
                 default: skip(parser);
             }
         }
         return new Game(name, bgg_id, min_players, max_players, min_play_time, max_play_time,
-                description, game_mechanic, image_url);
+                description, game_mechanic, rating, image_url);
+    }
+
+    private double readStats(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "statistics");
+        double rating = 0;
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG){
+                continue;
+            }
+
+            String tag_name = parser.getName();
+            if (tag_name.equals("ratings")) {
+                rating = readRating(parser);
+            } else {
+                skip(parser);
+            }
+        }
+
+        return rating;
+    }
+
+    private double readRating(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "ratings");
+        double rating = 0;
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG){
+                continue;
+            }
+
+            String tag_name = parser.getName();
+            if (tag_name.equals("bayesaverage")) {
+                rating = readAverage(parser);
+            } else {
+                skip(parser);
+            }
+        }
+
+        return rating;
+    }
+
+    private double readAverage(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "bayesaverage");
+        String rating = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "bayesaverage");
+        return Double.parseDouble(rating);
     }
 
     private String readName(XmlPullParser parser) throws XmlPullParserException, IOException {

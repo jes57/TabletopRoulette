@@ -53,6 +53,7 @@
                 android:layout_height="fill_parent"
                 android:textSize="20sp"
                 android:background="#FFFFFF"
+                android:id="@+id/textView_addition_details"
                 android:text="@string/additional_details"/>
 
             </LinearLayout>

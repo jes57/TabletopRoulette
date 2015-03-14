@@ -28,11 +28,12 @@ public class MainActivity extends ActionBarActivity {
             URL_ID = "http://www.boardgamegeek.com/xmlapi/boardgame/",
             URL_NAME = "http://www.boardgamegeek.com/xmlapi/search?search=Splendor",
             GAME_ID = "148228",
-            QUERY_URL = URL_ID + GAME_ID;
+            STATS = "?stats=1",
+            QUERY_URL = URL_ID + GAME_ID + STATS;
 
 
     private Intent intent;
-    TextView textView_description, textView_title;
+    TextView textView_description, textView_title, textView_details;
     ImageView imageView;
 
     @Override
@@ -70,10 +71,12 @@ public class MainActivity extends ActionBarActivity {
             setContentView(R.layout.game_info_layout);
             textView_description = (TextView) findViewById(R.id.textView_description);
             textView_title = (TextView) findViewById(R.id.textView_title);
+            textView_details = (TextView) findViewById(R.id.textView_addition_details);
             imageView = (ImageView) findViewById(R.id.imageView_game_artwork);
             new ImageLoadTask(game.get_image_url(), imageView).execute();
             textView_title.setText(game.get_name());
             textView_description.setText(game.get_description());
+            textView_details.setText(String.valueOf(game.get_rating()));
         }
     }
 
