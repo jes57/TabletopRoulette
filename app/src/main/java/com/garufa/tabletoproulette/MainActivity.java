@@ -101,6 +101,9 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_collection:
                 intent = new Intent(MainActivity.this, CollectionListView.class);
                 startActivity(intent); break;
+            case R.id.action_search:
+                intent = new Intent(MainActivity.this, SearchListView.class);
+                startActivity(intent); break;
             case R.id.action_addGame:
                 intent = new Intent(MainActivity.this, AddGame.class);
                 startActivity(intent); break;

@@ -1,15 +1,19 @@
 package com.garufa.tabletoproulette;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,7 +33,7 @@ import java.util.List;
  */
 public class SearchListView extends ActionBarActivity {
 
-    private Intent intent, intent_extras;
+    private Intent intent;
 
     String GAME_ID = "148228",
             GAME_NAME = "Splendor",
@@ -39,6 +43,7 @@ public class SearchListView extends ActionBarActivity {
     ListView collectionListView;
     ArrayList<String> gamesArrayList;
     List<Game> gameObjectsArrayList;
+    AlertDialog.Builder builder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +53,9 @@ public class SearchListView extends ActionBarActivity {
     }
 
     private void initialize() {
-        intent_extras = getIntent();
-        name = intent_extras.getExtras().getString(Constants.EXTRAS_NAME);
-        query_url = Constants.URL_BGG_NAME_SEARCH + name;
-
-        loadPage();
+        // Set the AlertDialog to accept the search parameter
+        displayAlertDialog();
+//        loadPage();
 //        gameObjectsArrayList.add(new Game("Splendor", "Super fun"));
 //        gameObjectsArrayList.add(new Game("Splendorifous", "Not fun"));
 
@@ -84,6 +87,34 @@ public class SearchListView extends ActionBarActivity {
 //                startActivity(gameIntent);
 //            }
 //        });
+    }
+
+    private void displayAlertDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(SearchListView.this);
+        View promptView = layoutInflater.inflate(R.layout.input_dialog, null);
+        builder = new AlertDialog.Builder(SearchListView.this);
+        builder.setView(promptView);
+        builder.setTitle("Search");
+        builder.setIcon(R.drawable.ic_launcher);
+        final EditText editText = (EditText) promptView.findViewById(R.id.dialogEditText);
+        builder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                name = editText.getText().toString();
+                query_url = Constants.URL_BGG_NAME_SEARCH + name;
+                // Need to replace spaces with the HTML code %20
+                query_url = query_url.replace(" ", "%20");
+                loadPage();
+            }
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     // Call the DownLoadXmlTask to populate ArrayList
@@ -178,6 +209,9 @@ public class SearchListView extends ActionBarActivity {
                 intent = new Intent(SearchListView.this, CollectionListView.class);
                 startActivity(intent);
                 break;
+            case R.id.action_search:
+                intent = new Intent(SearchListView.this, SearchListView.class);
+                startActivity(intent); break;
             case R.id.action_addGame:
                 intent = new Intent(SearchListView.this, AddGame.class);
                 startActivity(intent);

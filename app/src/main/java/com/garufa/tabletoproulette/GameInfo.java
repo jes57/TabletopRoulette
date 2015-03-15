@@ -136,6 +136,9 @@ public class GameInfo extends ActionBarActivity {
             case R.id.action_collection:
                 intent = new Intent(GameInfo.this, CollectionListView.class);
                 startActivity(intent); break;
+            case R.id.action_search:
+                intent = new Intent(GameInfo.this, SearchListView.class);
+                startActivity(intent); break;
             case R.id.action_addGame:
                 intent = new Intent(GameInfo.this, AddGame.class);
                 startActivity(intent); break;

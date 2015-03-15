@@ -4,9 +4,11 @@
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
     <item android:id="@+id/action_collection" android:title="@string/action_collection"
-        android:orderInCategory="110" app:showAsAction="never" />
+        android:orderInCategory="101" app:showAsAction="always" />
     <item android:id="@+id/action_addGame" android:title="@string/action_add_game"
-        android:orderInCategory="110" app:showAsAction="never" />
+        android:orderInCategory="103" app:showAsAction="never" />
     <item android:id="@+id/action_mainActivity" android:title="@string/test_activity_string"
         android:orderInCategory="110" app:showAsAction="never" />
+    <item android:id="@+id/action_search" android:title="@string/find_new_game"
+        android:orderInCategory="102" app:showAsAction="always" />
 </menu>
