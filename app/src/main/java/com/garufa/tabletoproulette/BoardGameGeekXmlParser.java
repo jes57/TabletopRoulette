@@ -19,6 +19,57 @@ import java.util.List;
 public class BoardGameGeekXmlParser {
     private static final String ns = null;
 
+    public List<Game> parse_by_name(InputStream in) throws XmlPullParserException, IOException {
+        try {
+            XmlPullParser parser = Xml.newPullParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(in, null);
+            parser.nextTag();
+            return  readSearchFeed(parser);
+        } finally {
+            in.close();
+        }
+    }
+
+    private List<Game> readSearchFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List<Game> games = new ArrayList<Game>();
+
+        parser.require(XmlPullParser.START_TAG, ns, "boardgames");
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            // Starts by looking for the entry tag
+            if (name.equals("boardgame")) {
+                games.add(readSearchEntry(parser));
+            } else {
+                skip(parser);
+            }
+        }
+        return games;
+    }
+
+    private Game readSearchEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "boardgame");
+        int bgg_id = 0;
+        String name = "";
+
+        bgg_id = Integer.parseInt(parser.getAttributeValue(ns, "objectid"));
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String tag_name = parser.getName();
+            switch (tag_name){
+                case "name": name = readName(parser); break;
+                default: skip(parser);
+            }
+        }
+        return new Game(name, bgg_id);
+    }
+
     public List<Game> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
@@ -136,17 +187,20 @@ public class BoardGameGeekXmlParser {
 
     private String readName(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "name");
-        String name = "";
-        // Need to make sure the name is the primary
-        String tag = parser.getName();
-        String primary = parser.getAttributeValue(ns, "primary");
-        if (tag.equals("name")) {
-            if (primary.equals("true")){
-                name = readText(parser);
-            }
-        }
+        String name = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "name");
         return name;
+//        String name = "";
+//        // Need to make sure the name is the primary
+//        String tag = parser.getName();
+//        String primary = parser.getAttributeValue(ns, "primary");
+//        if (tag.equals("name")) {
+//            if (primary.equals("true")){
+//                name = readText(parser);
+//            }
+//        }
+//        parser.require(XmlPullParser.END_TAG, ns, "name");
+//        return name;
     }
 
     private Integer readMinPlayers(XmlPullParser parser) throws XmlPullParserException, IOException {

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,95 +25,58 @@ import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
-    private static final String
-            TAG = "XML Parser",
-            URL_ID = "http://www.boardgamegeek.com/xmlapi/boardgame/",
-            URL_NAME = "http://www.boardgamegeek.com/xmlapi/search?search=Splendor",
-            GAME_ID = "148228",
-            STATS = "?stats=1",
-            QUERY_URL = URL_ID + GAME_ID + STATS;
-
 
     private Intent intent;
-    TextView textView_description, textView_title, textView_details;
-    ImageView imageView;
+    private TextView idView;
+    EditText nameEditText, descriptionEditText;
+    private String name;
+//    DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.add_game_layout);
 
-        Log.i(TAG, "Query XML...");
+        initialize();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        loadPage();
+    private void initialize() {
+        idView = (TextView) findViewById(R.id.tvGameID);
+        nameEditText = (EditText) findViewById(R.id.etGameName);
+        descriptionEditText = (EditText) findViewById(R.id.etGameDesc);
+//        dbHandler = new DBHandler(this, null, null, 1);
     }
 
-    private void loadPage() {
-        new DownLoadXmlTask().execute(QUERY_URL);
+    public void newGame (View view) {
+
+//        Game game = new Game(nameEditText.getText().toString(),
+//                descriptionEditText.getText().toString());
+//
+//        dbHandler.addGame(game);
+//        nameEditText.setText("");
+//        descriptionEditText.setText("");
     }
+    public void lookupGame (View view) {
 
-    private class DownLoadXmlTask extends AsyncTask<String, Void, Game> {
-        @Override
-        protected Game doInBackground(String... urls) {
-            try {
-                Log.i("AsyncTask", "Right before loadXmlFromUrl");
-                return loadXmlFromUrl(urls[0]);
-            } catch (IOException e) {
-                return new Game("N/A", "Unable to load data: IOException");
-            } catch (XmlPullParserException e) {
-                return new Game("N/A", "Unable to load data: XmlPullParserException");
-            }
-        }
 
-        @Override
-        protected void onPostExecute(Game game) {
-            setContentView(R.layout.game_info_layout);
-            textView_description = (TextView) findViewById(R.id.textView_description);
-            textView_title = (TextView) findViewById(R.id.textView_title);
-            textView_details = (TextView) findViewById(R.id.textView_addition_details);
-            imageView = (ImageView) findViewById(R.id.imageView_game_artwork);
-            new ImageLoadTask(game.get_image_url(), imageView).execute();
-            textView_title.setText(game.get_name());
-            textView_description.setText(game.get_description());
-            textView_details.setText(String.valueOf(game.get_rating()));
-        }
+        Intent gameIntent = new Intent(MainActivity.this, SearchListView.class);
+        name = nameEditText.getText().toString();
+        gameIntent.putExtra(Constants.EXTRAS_NAME, name);
+        startActivity(gameIntent);
     }
+    public void removeGame (View view) {
 
-    private Game loadXmlFromUrl(String url_string) throws XmlPullParserException, IOException {
-        Log.i("loadXmlFromUrl...", "Start of loadXmlFromUrl");
-        InputStream stream = null;
-        BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
-        List<Game> games = null;
+//        boolean result = dbHandler.deleteGame(nameEditText.getText().toString());
+//
+//        if (result){
+//            idView.setText("Record Deleted");
+//            nameEditText.setText("");
+//            descriptionEditText.setText("");
+//        } else {
+//            idView.setText("No Match Found");
+//        }
 
-        try {
-            stream = downloadUrl(url_string);
-            games = boardGameGeekXmlParser.parse(stream);
-        } finally {
-            if (stream != null){
-                stream.close();
-            }
-        }
-        return games.get(0);
     }
-
-    // Given a string representation of a URL, sets up a connection and gets
-    // an input stream.
-    private InputStream downloadUrl(String url_string) throws IOException {
-        URL url = new URL(url_string);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        // Starts the query
-        conn.connect();
-        InputStream stream = conn.getInputStream();
-        return stream;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

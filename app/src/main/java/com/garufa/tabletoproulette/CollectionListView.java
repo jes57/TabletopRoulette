@@ -1,7 +1,6 @@
 package com.garufa.tabletoproulette;
 
 import android.content.Intent;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -9,8 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,11 +20,16 @@ public class CollectionListView extends ActionBarActivity {
 
     private Intent intent;
 
+    String  GAME_ID = "148228",
+            GAME_NAME = "Splendor",
+            name, game_id;
+
     String[] gamesArray;
     ListView collectionListView;
     ArrayList<String> gamesArrayList;
     ArrayList<Game> gameObjectsArrayList;
     DBHandler dbHandler;
+    Cursor cursor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +41,7 @@ public class CollectionListView extends ActionBarActivity {
 
     private void initialize() {
         dbHandler = new DBHandler(this, null, null, 1);
-        Cursor cursor = dbHandler.getAllGames();
+        cursor = dbHandler.getAllGames();
 
         // Set the ListView
         collectionListView = (ListView) findViewById(R.id.collectionListView);
@@ -73,14 +75,18 @@ public class CollectionListView extends ActionBarActivity {
         collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String gamePicked = "You selected " +
-                        String.valueOf(parent.getId());
+                if (cursor.moveToPosition(position)) {
+                    name = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
+                    game_id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID));
+                }
+                String gamePicked = "You selected " + name;
 
                 Toast.makeText(CollectionListView.this, gamePicked, Toast.LENGTH_SHORT).show();
 
                 Intent gameIntent = new Intent(CollectionListView.this, GameInfo.class);
 
-//                gameIntent.putExtra("game", position);
+                gameIntent.putExtra(Constants.EXTRAS_ID, GAME_ID);
+                gameIntent.putExtra(Constants.EXTRAS_NAME, name);
                 startActivity(gameIntent);
             }
         });

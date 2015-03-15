@@ -13,6 +13,19 @@ public class Game {
 
     public Game(){}
 
+    public Game(String name, int bgg_id){
+        this._bgg_id        = bgg_id;
+        this._name          = name;
+        this._min_players   = 0;
+        this._max_players   = 0;
+        this._min_play_time = 0;
+        this._max_play_time = 0;
+        this._description   = "";
+        this._game_mechanic = "";
+        this._image_url     = "";
+        this._rating        = 0;
+    }
+
     public Game(String name, String desc){
         this._bgg_id        = 0;
         this._name          = name;

@@ -19,9 +19,6 @@ import java.io.InputStream;
  * Created by Jason on 3/7/2015.
  */
 public class GameCursorAdapter extends CursorAdapter {
-    public static final String COLUMN_ID = "_id";
-    public static final String COLUMN_GAME_NAME = "game_name";
-    public static final String COLUMN_DESCRIPTION = "description";
 
     public GameCursorAdapter(Context context, Cursor c) {
         super(context, c, 0);
@@ -36,9 +33,10 @@ public class GameCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ImageView imageView = (ImageView) view.findViewById(R.id.imageViewAdapter);
         TextView  textView  = (TextView)  view.findViewById(R.id.textViewAdapter);
-        String game = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_GAME_NAME));
+        String game = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
 
-        new ImageLoadTask("http://cf.geekdo-images.com/images/pic1904079_t.jpg", imageView).execute();
+        String url = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_IMAGE_URL));
+        new ImageLoadTask(url, imageView).execute();
         textView.setText(game);
     }
 }
