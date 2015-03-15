@@ -60,9 +60,9 @@ public class CollectionListView extends ActionBarActivity {
 
                 Toast.makeText(CollectionListView.this, gamePicked, Toast.LENGTH_SHORT).show();
 
-                Intent gameIntent = new Intent(CollectionListView.this, GameInfo.class);
+                Intent gameIntent = new Intent(CollectionListView.this, SearchDetails.class);
 
-                gameIntent.putExtra(Constants.EXTRAS_ID, GAME_ID);
+                gameIntent.putExtra(Constants.EXTRAS_ID, game_id);
                 gameIntent.putExtra(Constants.EXTRAS_NAME, name);
                 startActivity(gameIntent);
             }

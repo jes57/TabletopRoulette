@@ -27,7 +27,8 @@ public class GameInfo extends ActionBarActivity {
 
     private String game_id, game_name, query_url;
     private Intent intent, intent_extras;
-    TextView textView_description, textView_title, textView_details;
+    TextView textView_description, textView_title, textView_details,
+            textView_players, textView_playtime, textView_mechanic;
     ImageView imageView;
 
     @Override
@@ -70,13 +71,33 @@ public class GameInfo extends ActionBarActivity {
         protected void onPostExecute(Game game) {
             setContentView(R.layout.game_info_layout);
             textView_description = (TextView) findViewById(R.id.info_textView_description);
-            textView_title = (TextView) findViewById(R.id.info_textView_title);
-            textView_details = (TextView) findViewById(R.id.info_textView_addition_details);
-            imageView = (ImageView) findViewById(R.id.info_imageView_game_artwork);
+            textView_title       = (TextView) findViewById(R.id.info_textView_title);
+            textView_details     = (TextView) findViewById(R.id.info_textView_addition_details);
+            textView_players     = (TextView) findViewById(R.id.info_textView_players);
+            textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
+            textView_mechanic    = (TextView) findViewById(R.id.info_textView_mechanic);
+            imageView            = (ImageView) findViewById(R.id.info_imageView_game_artwork);
+
+            // Set player text
+            String players, time;
+            if (game.get_min_players() == game.get_max_players()){
+                players = String.valueOf(game.get_min_players());
+            } else {
+                players = game.get_min_players() + " - " + game.get_max_players();
+            }
+            if (game.get_min_play_time() == game.get_max_play_time()){
+                time = String.valueOf(game.get_min_play_time());
+            } else {
+                time    = game.get_min_play_time() + " - " + game.get_max_play_time();
+            }
+
             new ImageLoadTask(game.get_image_url(), imageView).execute();
             textView_title.setText(game.get_name());
             textView_description.setText(game.get_description());
             textView_details.setText(String.valueOf(game.get_rating()));
+            textView_playtime.setText(time);
+            textView_players.setText(players);
+            textView_mechanic.setText(game.get_game_mechanic());
         }
     }
 

@@ -8,8 +8,11 @@ import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -30,8 +33,11 @@ public class SearchDetails extends ActionBarActivity {
 
     private String game_id, game_name, query_url;
     private Intent intent, intent_extras;
-    TextView textView_description, textView_title, textView_details, textView_ratings;
+    TextView textView_description, textView_title, textView_details, textView_rating,
+            textView_players, textView_playtime, textView_mechanic;
     ImageView imageView;
+    Button button_add;
+    DBHandler dbHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,7 @@ public class SearchDetails extends ActionBarActivity {
         intent_extras = getIntent();
         game_id = intent_extras.getExtras().getString(Constants.EXTRAS_ID);
         query_url = Constants.URL_BGG_ID_SEARCH + game_id + Constants.URL_STATS;
+        dbHandler = new DBHandler(SearchDetails.this, null, null, 1);
     }
 
     @Override
@@ -70,19 +77,50 @@ public class SearchDetails extends ActionBarActivity {
         }
 
         @Override
-        protected void onPostExecute(Game game) {
+        protected void onPostExecute(Game g) {
+            final Game game = g;
             setContentView(R.layout.game_info_layout);
             textView_description = (TextView) findViewById(R.id.info_textView_description);
-            textView_title = (TextView) findViewById(R.id.info_textView_title);
-            textView_details = (TextView) findViewById(R.id.info_textView_addition_details);
-            textView_ratings = (TextView) findViewById(R.id.info_textView_rating);
-            imageView = (ImageView) findViewById(R.id.info_imageView_game_artwork);
+            textView_title       = (TextView) findViewById(R.id.info_textView_title);
+            textView_details     = (TextView) findViewById(R.id.info_textView_addition_details);
+            textView_rating      = (TextView) findViewById(R.id.info_textView_rating);
+            textView_players     = (TextView) findViewById(R.id.info_textView_players);
+            textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
+            textView_mechanic    = (TextView) findViewById(R.id.info_textView_mechanic);
+            imageView            = (ImageView) findViewById(R.id.info_imageView_game_artwork);
+            button_add           = (Button) findViewById(R.id.info_button_add);
+
+            // Set player text
+            String players, time;
+            if (game.get_min_players() == game.get_max_players()){
+                players = String.valueOf(game.get_min_players());
+            } else {
+                players = game.get_min_players() + " - " + game.get_max_players();
+            }
+            if (game.get_min_play_time() == game.get_max_play_time()){
+                time = String.valueOf(game.get_min_play_time());
+            } else {
+                time    = game.get_min_play_time() + " - " + game.get_max_play_time();
+            }
+
+            // Set page content
             new ImageLoadTask(game.get_image_url(), imageView).execute();
             textView_title.setText(game.get_name());
-            textView_ratings.setText(String.valueOf(game.get_rating()));
-
-            // Expand
             textView_description.setText(Html.fromHtml(game.get_description()));
+            textView_rating.setText(String.valueOf(game.get_rating()));
+            textView_playtime.setText(time);
+            textView_players.setText(players);
+            textView_mechanic.setText(game.get_game_mechanic());
+
+            // Set button
+            button_add.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dbHandler.addGame(game);
+                    String message = game.get_name() + " added to collection.";
+                    Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
