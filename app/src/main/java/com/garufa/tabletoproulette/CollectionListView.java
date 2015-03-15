@@ -48,29 +48,6 @@ public class CollectionListView extends ActionBarActivity {
         GameCursorAdapter cursorAdapter = new GameCursorAdapter(this, cursor);
         collectionListView.setAdapter(cursorAdapter);
 
-
-//        // Get the array for the listView
-//        Resources res = getResources();
-//        gamesArray = res.getStringArray(R.array.games_array);
-//
-//        // Assign the array to the listView
-//        final ListAdapter adapter = new ArrayAdapter<String>(this,
-//                R.layout.adapter_layout, gamesArray);
-//
-//        // Assign ArrayList
-//        gamesArrayList = new ArrayList<String>();
-//        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>( this,
-//                R.layout.adapter_layout, R.id.textViewAdapter, gamesArrayList);
-//
-//        for (int i = 0; i < gamesArray.length; i++){
-//            gamesArrayList.add(gamesArray[i]);
-//        }
-//
-//        // Set the ListView
-//        collectionListView = (ListView) findViewById(R.id.collectionListView);
-//        collectionListView.setAdapter(arrayAdapter);
-//
-//
         // Set the onClick event
         collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

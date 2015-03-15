@@ -14,38 +14,57 @@
             android:layout_height="125dp"
             android:background="@drawable/custom_border">
 
-            <ImageView
+            <FrameLayout
                 android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:id="@+id/imageView_game_artwork" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="25sp"
-                android:id="@+id/textView_title"
-                android:text="@string/splendor"/>
+                android:layout_height="110dp">
+
+                <ImageView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    android:id="@+id/info_imageView_game_artwork" />
+            </FrameLayout>
+
+            <LinearLayout android:orientation="vertical"  android:layout_width="fill_parent"
+                android:layout_height="fill_parent" android:layout_marginLeft="10dp">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:id="@+id/info_textView_title"/>
+                <LinearLayout android:layout_width="fill_parent" android:layout_height="fill_parent"
+                    android:orientation="horizontal">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10sp"
+                        android:text="@string/rating"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="10sp"
+                        android:id="@+id/info_textView_rating"/>
+                    </LinearLayout>
+
+            </LinearLayout>
+
         </LinearLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal">
+        <LinearLayout android:orientation="vertical" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal">
 
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:id="@+id/textView_description"
+                android:id="@+id/info_textView_description"
                 android:padding="10dp"
                 android:text="@string/not_assigned_string"/>
 
             </LinearLayout>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+        <LinearLayout android:orientation="vertical" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
             android:background="@drawable/custom_border">
 
             <TextView
@@ -53,7 +72,7 @@
                 android:layout_height="fill_parent"
                 android:textSize="20sp"
                 android:background="#FFFFFF"
-                android:id="@+id/textView_addition_details"
+                android:id="@+id/info_textView_addition_details"
                 android:text="@string/additional_details"/>
 
             </LinearLayout>

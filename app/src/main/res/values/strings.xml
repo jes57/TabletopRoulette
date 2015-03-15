@@ -20,6 +20,7 @@
     <string name="connection_error">Failed to connect to URL</string>
     <string name="xml_error">Error parsing XML</string>
     <string name="find_new_game">Find new game</string>
+    <string name="rating">Rating:</string>
     <string-array name="games_array">
         <item>Alhambra</item>
         <item>Carcassonne</item>

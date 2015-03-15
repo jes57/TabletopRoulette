@@ -104,7 +104,7 @@ public class BoardGameGeekXmlParser {
     private Game readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "boardgame");
         int bgg_id = 0, min_players = 0, max_players = 0, min_play_time = 0, max_play_time = 0;
-        String name = "Splendor", description = null, game_mechanic = null, image_url = null;
+        String name = "Unavailable", description = "Unavailable", game_mechanic = null, image_url = null;
         double rating = 0;
 
         bgg_id = Integer.parseInt(parser.getAttributeValue(ns, "objectid"));
@@ -115,13 +115,13 @@ public class BoardGameGeekXmlParser {
             }
             String tag_name = parser.getName();
             switch (tag_name){
-//                case "name":
-//                    String primary = parser.getAttributeValue(null, "primary");
-//                    if (primary != null && primary.equals("true")){
-//                        name = readName(parser); break;
-//                    } else {
-//                        skip(parser);
-//                    }
+                case "name":
+                    String primary = parser.getAttributeValue(null, "primary");
+                    if (primary != null && primary.equals("true")){
+                        name = readName(parser); break;
+                    } else {
+                        skip(parser);break;
+                    }
                 case "minplayers": min_players = readMinPlayers(parser); break;
                 case "maxplayers": max_players = readMaxPlayers(parser); break;
                 case "minplaytime": min_play_time = readMinPlayTime(parser); break;

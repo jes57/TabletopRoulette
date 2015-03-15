@@ -97,7 +97,7 @@ public class SearchListView extends ActionBarActivity {
         builder.setTitle("Search");
         builder.setIcon(R.drawable.ic_launcher);
         final EditText editText = (EditText) promptView.findViewById(R.id.dialogEditText);
-        builder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener(){
+        builder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 name = editText.getText().toString();
@@ -106,7 +106,7 @@ public class SearchListView extends ActionBarActivity {
                 query_url = query_url.replace(" ", "%20");
                 loadPage();
             }
-        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -148,6 +148,21 @@ public class SearchListView extends ActionBarActivity {
             // Set the ListView
             collectionListView = (ListView) findViewById(R.id.collectionListView);
             collectionListView.setAdapter(adapter);
+
+            collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // Set the name and id of the game to be displayed
+                    Game game = gameObjectsArrayList.get(position);
+                    name = game.get_name();
+                    game_id = String.valueOf(game.get_bgg_id());
+
+                    intent = new Intent(SearchListView.this, SearchDetails.class);
+                    intent.putExtra(Constants.EXTRAS_ID, game_id);
+                    intent.putExtra(Constants.EXTRAS_NAME, name);
+                    startActivity(intent);
+                }
+            });
         }
     }
 

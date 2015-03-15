@@ -1,33 +1,36 @@
 package com.garufa.tabletoproulette;
 
-        import android.content.Intent;
-        import android.os.AsyncTask;
-        import android.support.v7.app.ActionBarActivity;
-        import android.os.Bundle;
-        import android.util.Log;
-        import android.view.Menu;
-        import android.view.MenuItem;
-        import android.widget.ImageView;
-        import android.widget.TextView;
-        import org.xmlpull.v1.XmlPullParserException;
-        import java.io.IOException;
-        import java.io.InputStream;
-        import java.net.HttpURLConnection;
-        import java.net.URL;
-        import java.util.List;
+import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
 
 /**
- * Created by Jason on 2/18/2015.
+ * Created by Jason on 3/15/2015.
  */
-public class GameInfo extends ActionBarActivity {
+public class SearchDetails extends ActionBarActivity {
     private static final String
-            TAG = "XML Parser",
+            TAG = "Search Details...",
             GAME_ID = "148228";
 //            QUERY_URL = Constants.URL_BGG_ID_SEARCH + GAME_ID + Constants.URL_STATS;
 
     private String game_id, game_name, query_url;
     private Intent intent, intent_extras;
-    TextView textView_description, textView_title, textView_details;
+    TextView textView_description, textView_title, textView_details, textView_ratings;
     ImageView imageView;
 
     @Override
@@ -72,11 +75,14 @@ public class GameInfo extends ActionBarActivity {
             textView_description = (TextView) findViewById(R.id.info_textView_description);
             textView_title = (TextView) findViewById(R.id.info_textView_title);
             textView_details = (TextView) findViewById(R.id.info_textView_addition_details);
+            textView_ratings = (TextView) findViewById(R.id.info_textView_rating);
             imageView = (ImageView) findViewById(R.id.info_imageView_game_artwork);
             new ImageLoadTask(game.get_image_url(), imageView).execute();
             textView_title.setText(game.get_name());
-            textView_description.setText(game.get_description());
-            textView_details.setText(String.valueOf(game.get_rating()));
+            textView_ratings.setText(String.valueOf(game.get_rating()));
+
+            // Expand
+            textView_description.setText(Html.fromHtml(game.get_description()));
         }
     }
 
@@ -134,16 +140,16 @@ public class GameInfo extends ActionBarActivity {
         switch (id){
             case R.id.action_settings: return true;
             case R.id.action_collection:
-                intent = new Intent(GameInfo.this, CollectionListView.class);
+                intent = new Intent(SearchDetails.this, CollectionListView.class);
                 startActivity(intent); break;
             case R.id.action_search:
-                intent = new Intent(GameInfo.this, SearchListView.class);
+                intent = new Intent(SearchDetails.this, SearchListView.class);
                 startActivity(intent); break;
             case R.id.action_addGame:
-                intent = new Intent(GameInfo.this, AddGame.class);
+                intent = new Intent(SearchDetails.this, AddGame.class);
                 startActivity(intent); break;
             case R.id.action_mainActivity:
-                intent = new Intent(GameInfo.this, MainActivity.class);
+                intent = new Intent(SearchDetails.this, MainActivity.class);
                 startActivity(intent); break;
 
         }
