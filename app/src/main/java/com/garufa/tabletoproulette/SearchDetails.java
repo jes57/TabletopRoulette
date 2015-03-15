@@ -116,10 +116,14 @@ public class SearchDetails extends ActionBarActivity {
             button_add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    dbHandler.addGame(game);
-                    String message = game.get_name() + " added to collection.";
-                    Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
-                }
+                    if (dbHandler.addGame(game)){
+                        String message = game.get_name() + " added to collection.";
+                        Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
+                    } else {
+                        String message = "Could not add. Game may already exist in database.";
+                        Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
+                    }
+                 }
             });
         }
     }

@@ -58,7 +58,7 @@ public class DBHandler extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addGame(Game game){
+    public boolean addGame(Game game){
         ContentValues values = new ContentValues();
         values.put(COLUMN_GAME_NAME, game.get_name());
         values.put(COLUMN_BGG_ID, game.get_bgg_id());
@@ -72,9 +72,14 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_IMAGE_URL, game.get_image_url());
 
         SQLiteDatabase db = this.getWritableDatabase();
-
-        db.insert(TABLE_GAMES, null, values);
-        db.close();
+        long success = db.insert(TABLE_GAMES, null, values);
+        if (success > 0){
+            db.close();
+            return true;
+        } else {
+            db.close();
+            return false;
+        }
     }
 
     public Game findGame(String game_name){
