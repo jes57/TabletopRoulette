@@ -1,9 +1,12 @@
 package com.garufa.tabletoproulette;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +25,7 @@ public class CollectionListView extends ActionBarActivity {
 
     String  GAME_ID = "148228",
             GAME_NAME = "Splendor",
-            name, game_id;
+            name, game_id, game_to_delete;
 
     String[] gamesArray;
     ListView collectionListView;
@@ -67,6 +70,41 @@ public class CollectionListView extends ActionBarActivity {
                 startActivity(gameIntent);
             }
         });
+        collectionListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                return onLongListItemClick(view, position, id);
+            }
+        });
+    }
+
+    private boolean onLongListItemClick(View view, int position, long id) {
+        if (cursor.moveToPosition(position)) {
+            game_to_delete = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
+        } else {
+            return false;
+        }
+
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(CollectionListView.this)
+                .setTitle("Delete")
+                .setMessage("Delete " + game_to_delete + "?");
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dbHandler.deleteGame(game_to_delete);
+                initialize();
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).create();
+        alertDialog.show();
+
+        return true;
     }
 
     @Override
