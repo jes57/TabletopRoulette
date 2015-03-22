@@ -3,7 +3,6 @@ package com.garufa.tabletoproulette;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -220,7 +219,7 @@ public class SearchDetails extends ActionBarActivity{
                 intent = new Intent(SearchDetails.this, SearchListView.class);
                 startActivity(intent); break;
             case R.id.action_addGame:
-                intent = new Intent(SearchDetails.this, AddGame.class);
+                intent = new Intent(SearchDetails.this, QueryGames.class);
                 startActivity(intent); break;
             case R.id.action_mainActivity:
                 intent = new Intent(SearchDetails.this, MainActivity.class);

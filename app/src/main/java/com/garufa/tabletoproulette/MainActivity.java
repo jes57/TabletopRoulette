@@ -1,27 +1,13 @@
 package com.garufa.tabletoproulette;
 
 import android.content.Intent;
-import android.content.res.XmlResourceParser;
-import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.List;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -105,7 +91,7 @@ public class MainActivity extends ActionBarActivity {
                 intent = new Intent(MainActivity.this, SearchListView.class);
                 startActivity(intent); break;
             case R.id.action_addGame:
-                intent = new Intent(MainActivity.this, AddGame.class);
+                intent = new Intent(MainActivity.this, QueryGames.class);
                 startActivity(intent); break;
             case R.id.action_mainActivity:
                 intent = new Intent(MainActivity.this, MainActivity.class);

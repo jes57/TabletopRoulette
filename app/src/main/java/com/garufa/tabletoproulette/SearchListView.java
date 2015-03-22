@@ -3,7 +3,6 @@ package com.garufa.tabletoproulette;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -14,10 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -228,7 +224,7 @@ public class SearchListView extends ActionBarActivity {
                 intent = new Intent(SearchListView.this, SearchListView.class);
                 startActivity(intent); break;
             case R.id.action_addGame:
-                intent = new Intent(SearchListView.this, AddGame.class);
+                intent = new Intent(SearchListView.this, QueryGames.class);
                 startActivity(intent);
                 break;
             case R.id.action_mainActivity:

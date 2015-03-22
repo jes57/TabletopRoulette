@@ -12,7 +12,7 @@ import android.widget.TextView;
 /**
  * Created by Jason on 3/7/2015.
  */
-public class AddGame extends ActionBarActivity {
+public class QueryGames extends ActionBarActivity {
 
     private Intent intent;
     private TextView idView;
@@ -91,16 +91,16 @@ public class AddGame extends ActionBarActivity {
         switch (id){
             case R.id.action_settings: return true;
             case R.id.action_collection:
-                intent = new Intent(AddGame.this, CollectionListView.class);
+                intent = new Intent(QueryGames.this, CollectionListView.class);
                 startActivity(intent); break;
             case R.id.action_search:
-                intent = new Intent(AddGame.this, SearchListView.class);
+                intent = new Intent(QueryGames.this, SearchListView.class);
                 startActivity(intent); break;
             case R.id.action_addGame:
-                intent = new Intent(AddGame.this, AddGame.class);
+                intent = new Intent(QueryGames.this, QueryGames.class);
                 startActivity(intent); break;
             case R.id.action_mainActivity:
-                intent = new Intent(AddGame.this, MainActivity.class);
+                intent = new Intent(QueryGames.this, MainActivity.class);
                 startActivity(intent); break;
 
         }

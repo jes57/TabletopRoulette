@@ -6,17 +6,13 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 /**
@@ -147,7 +143,7 @@ public class CollectionListView extends ActionBarActivity {
                 intent = new Intent(CollectionListView.this, SearchListView.class);
                 startActivity(intent); break;
             case R.id.action_addGame:
-                intent = new Intent(CollectionListView.this, AddGame.class);
+                intent = new Intent(CollectionListView.this, QueryGames.class);
                 startActivity(intent); break;
             case R.id.action_mainActivity:
                 intent = new Intent(CollectionListView.this, MainActivity.class);
