@@ -1,6 +1,7 @@
 package com.garufa.tabletoproulette;
 
         import android.content.Intent;
+        import android.graphics.Bitmap;
         import android.os.AsyncTask;
         import android.support.v7.app.ActionBarActivity;
         import android.os.Bundle;
@@ -30,6 +31,7 @@ public class GameInfo extends ActionBarActivity {
     TextView textView_description, textView_title, textView_details,
             textView_players, textView_playtime, textView_mechanic;
     ImageView imageView;
+    Bitmap image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +93,13 @@ public class GameInfo extends ActionBarActivity {
                 time    = game.get_min_play_time() + " - " + game.get_max_play_time();
             }
 
-            new ImageLoadTask(game.get_image_url(), imageView).execute();
+            new ImageLoadTask(game.get_image_url(), new AsyncResponse() {
+                @Override
+                public void processFinish(Bitmap output) {
+                    image = output;
+                }
+            }).execute();
+            imageView.setImageBitmap(image);
             textView_title.setText(game.get_name());
             textView_description.setText(game.get_description());
             textView_details.setText(String.valueOf(game.get_rating()));

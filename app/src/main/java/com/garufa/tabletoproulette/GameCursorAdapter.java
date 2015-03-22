@@ -30,7 +30,7 @@ public class GameCursorAdapter extends CursorAdapter {
         String game = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
 
         String url = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_IMAGE_URL));
-        new ImageLoadTask(url, imageView).execute();
+//        new ImageLoadTask(url, imageView).execute();
         textView.setText(game);
     }
 }

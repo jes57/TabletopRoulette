@@ -54,6 +54,7 @@
         <Button
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:onClick="add_game"
             android:text="@string/add_game_to_collection"
             android:id="@+id/info_button_add" />
 

@@ -55,6 +55,7 @@ public class SearchListView extends ActionBarActivity {
     private void initialize() {
         // Set the AlertDialog to accept the search parameter
         displayAlertDialog();
+        setContentView(R.layout.collection_layout);
 //        loadPage();
 //        gameObjectsArrayList.add(new Game("Splendor", "Super fun"));
 //        gameObjectsArrayList.add(new Game("Splendorifous", "Not fun"));
@@ -141,7 +142,6 @@ public class SearchListView extends ActionBarActivity {
 
         @Override
         protected void onPostExecute(List<Game> games) {
-            setContentView(R.layout.collection_layout);
             gameObjectsArrayList = games;
             GameArrayAdapter adapter = new GameArrayAdapter(SearchListView.this, gameObjectsArrayList);
 
