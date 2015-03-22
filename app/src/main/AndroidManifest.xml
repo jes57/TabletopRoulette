@@ -20,34 +20,41 @@
             android:name=".MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
+            android:logo="@drawable/tabletoproulet"
+            android:icon="@drawable/ic_launcher"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".CollectionListView"
-            android:label="@string/app_name"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/collection_string"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".GameInfo"
+            android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".AddGame"
+            android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".SearchListView"
+            android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".SearchDetails"
+            android:icon="@drawable/ic_launcher"
             android:label="@string/app_name"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">

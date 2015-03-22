@@ -25,6 +25,7 @@
     <string name="players">Players:</string>
     <string name="play_time">Play time:</string>
     <string name="mechanic">Mechanic:</string>
+    <string name="collection_string">Collection</string>
     <string-array name="games_array">
         <item>Alhambra</item>
         <item>Carcassonne</item>
