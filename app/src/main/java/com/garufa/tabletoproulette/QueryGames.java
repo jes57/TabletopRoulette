@@ -22,49 +22,49 @@ public class QueryGames extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_game_layout);
+        setContentView(R.layout.query_game_layout);
 
         initialize();
     }
 
     private void initialize() {
-        idView = (TextView) findViewById(R.id.tvGameID);
-        nameEditText = (EditText) findViewById(R.id.etGameName);
-        descriptionEditText = (EditText) findViewById(R.id.etGameDesc);
-        dbHandler = new DBHandler(this, null, null, 1);
+//        idView = (TextView) findViewById(R.id.tvGameID);
+//        nameEditText = (EditText) findViewById(R.id.query_editText_time);
+//        descriptionEditText = (EditText) findViewById(R.id.etGameDesc);
+//        dbHandler = new DBHandler(this, null, null, 1);
     }
 
-    public void newGame (View view) {
+    public void search (View view) {
 
-        Game game = new Game(nameEditText.getText().toString(),
-                descriptionEditText.getText().toString());
-
-        dbHandler.addGame(game);
-        nameEditText.setText("");
-        descriptionEditText.setText("");
+//        Game game = new Game(nameEditText.getText().toString(),
+//                descriptionEditText.getText().toString());
+//
+//        dbHandler.addGame(game);
+//        nameEditText.setText("");
+//        descriptionEditText.setText("");
     }
-    public void lookupGame (View view) {
+    public void randomGame (View view) {
 
-        Game game = dbHandler.findGame(nameEditText.getText().toString());
-
-        if (game != null) {
-            idView.setText(String.valueOf(game.get_id()));
-            descriptionEditText.setText(game.get_description());
-        } else {
-            idView.setText("No Match Found");
-        }
+//        Game game = dbHandler.findGame(nameEditText.getText().toString());
+//
+//        if (game != null) {
+//            idView.setText(String.valueOf(game.get_id()));
+//            descriptionEditText.setText(game.get_description());
+//        } else {
+//            idView.setText("No Match Found");
+//        }
     }
     public void removeGame (View view) {
 
-        boolean result = dbHandler.deleteGame(nameEditText.getText().toString());
-
-        if (result){
-            idView.setText("Record Deleted");
-            nameEditText.setText("");
-            descriptionEditText.setText("");
-        } else {
-            idView.setText("No Match Found");
-        }
+//        boolean result = dbHandler.deleteGame(nameEditText.getText().toString());
+//
+//        if (result){
+//            idView.setText("Record Deleted");
+//            nameEditText.setText("");
+//            descriptionEditText.setText("");
+//        } else {
+//            idView.setText("No Match Found");
+//        }
 
     }
 
@@ -93,10 +93,10 @@ public class QueryGames extends ActionBarActivity {
             case R.id.action_collection:
                 intent = new Intent(QueryGames.this, CollectionListView.class);
                 startActivity(intent); break;
-            case R.id.action_search:
+            case R.id.action_new_game:
                 intent = new Intent(QueryGames.this, SearchListView.class);
                 startActivity(intent); break;
-            case R.id.action_addGame:
+            case R.id.action_query:
                 intent = new Intent(QueryGames.this, QueryGames.class);
                 startActivity(intent); break;
             case R.id.action_mainActivity:

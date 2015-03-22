@@ -139,10 +139,10 @@ public class CollectionListView extends ActionBarActivity {
             case R.id.action_collection:
                 intent = new Intent(CollectionListView.this, CollectionListView.class);
                 startActivity(intent); break;
-            case R.id.action_search:
+            case R.id.action_new_game:
                 intent = new Intent(CollectionListView.this, SearchListView.class);
                 startActivity(intent); break;
-            case R.id.action_addGame:
+            case R.id.action_query:
                 intent = new Intent(CollectionListView.this, QueryGames.class);
                 startActivity(intent); break;
             case R.id.action_mainActivity:

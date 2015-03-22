@@ -26,6 +26,13 @@
     <string name="play_time">Play time:</string>
     <string name="mechanic">Mechanic:</string>
     <string name="collection_string">Collection</string>
+    <string name="feeling_lucky_string">I\'m Feeling Lucky</string>
+    <string name="search_string">Search</string>
+    <string name="number_of_players_string">Players</string>
+    <string name="game_length_string">Game Length</string>
+    <string name="minutes_string">minutes</string>
+    <string name="game_mechanic_string">Game Mechanic</string>
+    <string name="min_rating_string">Min. Rating</string>
     <string-array name="games_array">
         <item>Alhambra</item>
         <item>Carcassonne</item>

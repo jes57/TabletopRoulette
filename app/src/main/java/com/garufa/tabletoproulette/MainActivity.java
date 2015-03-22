@@ -21,19 +21,16 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_game_layout);
+        setContentView(R.layout.query_game_layout);
 
         initialize();
     }
 
     private void initialize() {
-        idView = (TextView) findViewById(R.id.tvGameID);
-        nameEditText = (EditText) findViewById(R.id.etGameName);
-        descriptionEditText = (EditText) findViewById(R.id.etGameDesc);
 //        dbHandler = new DBHandler(this, null, null, 1);
     }
 
-    public void newGame (View view) {
+    public void search (View view) {
 
 //        Game game = new Game(nameEditText.getText().toString(),
 //                descriptionEditText.getText().toString());
@@ -42,13 +39,7 @@ public class MainActivity extends ActionBarActivity {
 //        nameEditText.setText("");
 //        descriptionEditText.setText("");
     }
-    public void lookupGame (View view) {
-
-
-        Intent gameIntent = new Intent(MainActivity.this, SearchListView.class);
-        name = nameEditText.getText().toString();
-        gameIntent.putExtra(Constants.EXTRAS_NAME, name);
-        startActivity(gameIntent);
+    public void randomGame (View view) {
     }
     public void removeGame (View view) {
 
@@ -87,10 +78,10 @@ public class MainActivity extends ActionBarActivity {
             case R.id.action_collection:
                 intent = new Intent(MainActivity.this, CollectionListView.class);
                 startActivity(intent); break;
-            case R.id.action_search:
+            case R.id.action_new_game:
                 intent = new Intent(MainActivity.this, SearchListView.class);
                 startActivity(intent); break;
-            case R.id.action_addGame:
+            case R.id.action_query:
                 intent = new Intent(MainActivity.this, QueryGames.class);
                 startActivity(intent); break;
             case R.id.action_mainActivity:

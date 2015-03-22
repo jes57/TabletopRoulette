@@ -6,12 +6,12 @@
     <item android:id="@+id/action_collection" android:title="@string/action_collection"
         android:orderInCategory="101" app:showAsAction="always"
         android:icon="@drawable/ic_action_collection" />
-    <item android:id="@+id/action_addGame" android:title="@string/action_add_game"
-        android:orderInCategory="103" app:showAsAction="never" />
+    <item android:id="@+id/action_query" android:title="@string/action_add_game"
+        android:orderInCategory="103" app:showAsAction="always"
+        android:icon="@drawable/ic_action_search"/>
     <item android:id="@+id/action_mainActivity" android:title="@string/test_activity_string"
-        android:orderInCategory="110" app:showAsAction="always"
-        android:icon="@drawable/ic_action_search" />
-    <item android:id="@+id/action_search" android:title="@string/find_new_game"
+        android:orderInCategory="110" app:showAsAction="never"  />
+    <item android:id="@+id/action_new_game" android:title="@string/find_new_game"
         android:orderInCategory="102" app:showAsAction="always"
         android:icon="@drawable/ic_action_new" />
 </menu>
