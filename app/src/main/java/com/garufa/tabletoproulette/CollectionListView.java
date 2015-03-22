@@ -42,7 +42,13 @@ public class CollectionListView extends ActionBarActivity {
         initialize();
     }
 
-    private void initialize() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setCollectionListView();
+    }
+
+    private void setCollectionListView() {
         dbHandler = new DBHandler(this, null, null, 1);
         cursor = dbHandler.getAllGames();
 
@@ -50,7 +56,10 @@ public class CollectionListView extends ActionBarActivity {
         collectionListView = (ListView) findViewById(R.id.collectionListView);
         GameCursorAdapter cursorAdapter = new GameCursorAdapter(this, cursor);
         collectionListView.setAdapter(cursorAdapter);
+    }
 
+    private void initialize() {
+        setCollectionListView();
         // Set the onClick event
         collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -89,12 +98,12 @@ public class CollectionListView extends ActionBarActivity {
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(CollectionListView.this)
                 .setTitle("Delete")
                 .setMessage("Delete " + game_to_delete + "?");
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dbHandler.deleteGame(game_to_delete);
-                initialize();
+                setCollectionListView();
             }
         }).setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override

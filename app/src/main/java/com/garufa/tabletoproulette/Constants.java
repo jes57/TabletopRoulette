@@ -32,6 +32,8 @@ public final class Constants {
             COLUMN_BGG_ID = "bgg_id",
             COLUMN_RATING = "rating";
 
+    // Other Constants
+    public static final String FILE_TYPE = ".png";
 
     // Prevent this class from being instantiated
     private Constants(){

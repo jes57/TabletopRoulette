@@ -1,5 +1,12 @@
 package com.garufa.tabletoproulette;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 
 /**
@@ -77,6 +84,19 @@ public class Game {
     public int      get_max_play_time() { return _max_play_time; }
     public int      get_bgg_id()        { return _bgg_id; }
     public double   get_rating()        { return _rating; }
+
+    // Get the image from internal storage
+    public Bitmap get_thumbnail(Context context) {
+        String file_name = String.valueOf(_bgg_id) + Constants.FILE_TYPE;
+        try {
+            File file_path = context.getFileStreamPath(file_name);
+            FileInputStream inputStream = new FileInputStream(file_path);
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.tabletoproulet);
+        }
+    }
 
     public void set_id(int _id)                         { this._id = _id; }
     public void set_name(String _name)                  { this._name = _name; }

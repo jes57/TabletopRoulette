@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * Created by Jason on 3/15/2015.
  */
-public class SearchDetails extends ActionBarActivity implements AsyncResponse{
+public class SearchDetails extends ActionBarActivity{
     private static final String
             TAG = "Search Details...",
             GAME_ID = "148228";
@@ -78,8 +78,13 @@ public class SearchDetails extends ActionBarActivity implements AsyncResponse{
 
     public void add_game(View v) {
         if (dbHandler.addGame(game_to_add)){
-            String message = game_to_add.get_name() + " added to collection.";
-            Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
+            if (image != null){
+                saveImageInternal(image);
+                String message = game_to_add.get_name() + " image added.";
+                Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
+            }
+//            String message = game_to_add.get_name() + " added to collection.";
+//            Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
         } else {
             String message = "Could not add. Game may already exist in database.";
             Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
@@ -89,11 +94,6 @@ public class SearchDetails extends ActionBarActivity implements AsyncResponse{
 
     private void loadPage() {
         new DownLoadXmlTask().execute(query_url);
-    }
-
-    @Override
-    public void processFinish(Bitmap output) {
-        image = output;
     }
 
     private class DownLoadXmlTask extends AsyncTask<String, Void, Game> {
@@ -140,6 +140,23 @@ public class SearchDetails extends ActionBarActivity implements AsyncResponse{
             textView_playtime.setText(time);
             textView_players.setText(players);
             textView_mechanic.setText(game_to_add.get_game_mechanic());
+        }
+    }
+
+    private boolean saveImageInternal(Bitmap image) {
+        String file_name = String.valueOf(game_to_add.get_bgg_id()) + Constants.FILE_TYPE;
+        try {
+            // Compress the image to write to OutputStream
+            FileOutputStream outputStream = openFileOutput(file_name, Context.MODE_PRIVATE);
+
+            // Write the bitmap to the output stream
+            image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.close();
+
+            return true;
+        } catch (Exception e) {
+            Log.e("saveImageInteral()", e.getMessage());
+            return false;
         }
     }
 
