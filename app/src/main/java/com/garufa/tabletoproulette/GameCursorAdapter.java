@@ -34,13 +34,14 @@ public class GameCursorAdapter extends CursorAdapter {
         TextView  textView  = (TextView)  view.findViewById(R.id.adapter_textView_title);
         String name = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
 
-        String file_name = cursor.getString(
-                cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID)) + Constants.FILE_TYPE;
+        String file_name = cursor.getString( cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID));
         imageView.setImageBitmap(get_thumbnail(context, file_name));
 
         textView.setText(name);
     }
-    public Bitmap get_thumbnail(Context context, String file_name) {
+    public Bitmap get_thumbnail(Context context, String game_id) {
+        String file_name = game_id + Constants.FILE_TYPE;
+
         try {
             File file_path = context.getFileStreamPath(file_name);
             FileInputStream inputStream = new FileInputStream(file_path);

@@ -1,16 +1,24 @@
 package com.garufa.tabletoproulette;
 
+        import android.content.Context;
         import android.content.Intent;
         import android.graphics.Bitmap;
+        import android.graphics.BitmapFactory;
         import android.os.AsyncTask;
         import android.support.v7.app.ActionBarActivity;
         import android.os.Bundle;
+        import android.text.Html;
         import android.util.Log;
         import android.view.Menu;
         import android.view.MenuItem;
+        import android.view.View;
+        import android.widget.Button;
         import android.widget.ImageView;
         import android.widget.TextView;
         import org.xmlpull.v1.XmlPullParserException;
+
+        import java.io.File;
+        import java.io.FileInputStream;
         import java.io.IOException;
         import java.io.InputStream;
         import java.net.HttpURLConnection;
@@ -26,12 +34,16 @@ public class GameInfo extends ActionBarActivity {
             GAME_ID = "148228";
 //            QUERY_URL = Constants.URL_BGG_ID_SEARCH + GAME_ID + Constants.URL_STATS;
 
-    private String game_id, game_name, query_url;
+    private String game_name, query_url;
+    int game_id, bgg_id;
     private Intent intent, intent_extras;
     TextView textView_description, textView_title, textView_details,
-            textView_players, textView_playtime, textView_mechanic;
+            textView_players, textView_playtime, textView_mechanic, textView_rating;
     ImageView imageView;
+    Button button_add;
     Bitmap image;
+    DBHandler dbHandler;
+    Game game;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,47 +52,34 @@ public class GameInfo extends ActionBarActivity {
     }
 
     private void initialize() {
-        // Get the game ID
-        intent_extras = getIntent();
-        game_id = intent_extras.getExtras().getString(Constants.EXTRAS_ID);
-        query_url = Constants.URL_BGG_ID_SEARCH + game_id + Constants.URL_STATS;
-    }
+        setContentView(R.layout.game_info_layout);
+        textView_description = (TextView) findViewById(R.id.info_textView_description);
+        textView_title       = (TextView) findViewById(R.id.info_textView_title);
+        textView_details     = (TextView) findViewById(R.id.info_textView_addition_details);
+        textView_rating      = (TextView) findViewById(R.id.info_textView_rating);
+        textView_players     = (TextView) findViewById(R.id.info_textView_players);
+        textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
+        textView_mechanic    = (TextView) findViewById(R.id.info_textView_mechanic);
+        imageView            = (ImageView) findViewById(R.id.info_imageView_game_artwork);
+        button_add           = (Button) findViewById(R.id.info_button_add);
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        loadPage();
-    }
+        // Hide the button
+        button_add.setVisibility(View.INVISIBLE);
+        button_add.setHeight(0);
 
-    private void loadPage() {
-        new DownLoadXmlTask().execute(query_url);
-    }
+        // Retrieve the extras to determine game
+        intent_extras        = getIntent();
+        Bundle bundle = intent_extras.getExtras();
+        if (bundle != null){
+            game_id = Integer.parseInt(bundle.getString(Constants.EXTRAS_ID));
+            bgg_id = Integer.parseInt(bundle.getString(Constants.EXTRAS_BGG_ID));
+            game_name = bundle.getString(Constants.EXTRAS_NAME);
 
-    private class DownLoadXmlTask extends AsyncTask<String, Void, Game> {
-        @Override
-        protected Game doInBackground(String... urls) {
-            try {
-                Log.i("AsyncTask", "Right before loadXmlFromUrl");
-                return loadXmlFromUrl(urls[0]);
-            } catch (IOException e) {
-                return new Game("N/A", "Unable to load data: IOException");
-            } catch (XmlPullParserException e) {
-                return new Game("N/A", "Unable to load data: XmlPullParserException");
-            }
-        }
+            // Find the game in the database
+            dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
+            game = dbHandler.findGame(game_name);
 
-        @Override
-        protected void onPostExecute(Game game) {
-            setContentView(R.layout.game_info_layout);
-            textView_description = (TextView) findViewById(R.id.info_textView_description);
-            textView_title       = (TextView) findViewById(R.id.info_textView_title);
-            textView_details     = (TextView) findViewById(R.id.info_textView_addition_details);
-            textView_players     = (TextView) findViewById(R.id.info_textView_players);
-            textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
-            textView_mechanic    = (TextView) findViewById(R.id.info_textView_mechanic);
-            imageView            = (ImageView) findViewById(R.id.info_imageView_game_artwork);
-
-            // Set player text
+            // Set players and time strings
             String players, time;
             if (game.get_min_players() == game.get_max_players()){
                 players = String.valueOf(game.get_min_players());
@@ -93,54 +92,34 @@ public class GameInfo extends ActionBarActivity {
                 time    = game.get_min_play_time() + " - " + game.get_max_play_time();
             }
 
-            new ImageLoadTask(game.get_image_url(), new AsyncResponse() {
-                @Override
-                public void processFinish(Bitmap output) {
-                    image = output;
-                }
-            }).execute();
-            imageView.setImageBitmap(image);
+            // Set the views to the data in the selected game
             textView_title.setText(game.get_name());
-            textView_description.setText(game.get_description());
-            textView_details.setText(String.valueOf(game.get_rating()));
+            textView_description.setText(Html.fromHtml(game.get_description()));
+            textView_rating.setText(String.valueOf(game.get_rating()));
             textView_playtime.setText(time);
             textView_players.setText(players);
             textView_mechanic.setText(game.get_game_mechanic());
+
+            // Set the ImageView
+            String game_id = String.valueOf(game.get_bgg_id());
+            imageView.setImageBitmap(get_thumbnail(game_id));
         }
+
     }
 
-    private Game loadXmlFromUrl(String url_string) throws XmlPullParserException, IOException {
-        Log.i("loadXmlFromUrl...", "Start of loadXmlFromUrl");
-        InputStream stream = null;
-        BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
-        List<Game> games = null;
+    // Retrieve the thumbnail stored locally
+    private Bitmap get_thumbnail(String game_id) {
+        String file_name = game_id + Constants.FILE_TYPE;
 
         try {
-            stream = downloadUrl(url_string);
-            games = boardGameGeekXmlParser.parse(stream);
-        } finally {
-            if (stream != null){
-                stream.close();
-            }
+            File file_path = getFileStreamPath(file_name);
+            FileInputStream inputStream = new FileInputStream(file_path);
+            return BitmapFactory.decodeStream(inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return BitmapFactory.decodeResource(getResources(), R.drawable.tabletoproulet);
         }
-        return games.get(0);
     }
-
-    // Given a string representation of a URL, sets up a connection and gets
-    // an input stream.
-    private InputStream downloadUrl(String url_string) throws IOException {
-        URL url = new URL(url_string);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        // Starts the query
-        conn.connect();
-        InputStream stream = conn.getInputStream();
-        return stream;
-    }
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

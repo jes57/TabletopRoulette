@@ -7,8 +7,10 @@ public final class Constants {
 
     // Intent passing constants
     public static final String
-            EXTRAS_NAME = "game_name",
-            EXTRAS_ID = "game_id";
+            EXTRAS_BUNDLE   = "bundle",
+            EXTRAS_NAME     = "game_name",
+            EXTRAS_ID       = "bgg_id",
+            EXTRAS_BGG_ID   = "bgg_id";
 
     // BoardGameGeek Searching constants
     public static final String

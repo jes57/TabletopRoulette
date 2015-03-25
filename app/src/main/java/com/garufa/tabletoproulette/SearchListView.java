@@ -71,7 +71,7 @@ public class SearchListView extends ActionBarActivity {
 //            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 //                if (cursor.moveToPosition(position)) {
 //                    name = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
-//                    game_id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID));
+//                    bgg_id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID));
 //                }
 //                String gamePicked = "You selected " + name;
 //

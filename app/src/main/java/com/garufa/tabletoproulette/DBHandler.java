@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class DBHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "collectionDB.db";
     private static final String TABLE_GAMES   = "games";
 
@@ -85,6 +85,37 @@ public class DBHandler extends SQLiteOpenHelper {
     public Game findGame(String game_name){
         String query = "Select * FROM " + TABLE_GAMES + " WHERE " + COLUMN_GAME_NAME
                 + " =  \"" + game_name + "\"";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        Game game = new Game();
+
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            game.set_id(Integer.parseInt(cursor.getString(0)));
+            game.set_name(cursor.getString(1));
+            game.set_bgg_id(Integer.parseInt(cursor.getString(2)));
+            game.set_min_players(Integer.parseInt(cursor.getString(3)));
+            game.set_max_players(Integer.parseInt(cursor.getString(4)));
+            game.set_min_play_time(Integer.parseInt(cursor.getString(5)));
+            game.set_max_play_time(Integer.parseInt(cursor.getString(6)));
+            game.set_description(cursor.getString(7));
+            game.set_game_mechanic(cursor.getString(8));
+            game.set_rating(Double.parseDouble(cursor.getString(9)));
+            game.set_image_url(cursor.getString(10));
+            cursor.close();
+        } else {
+            game = null;
+        }
+        db.close();
+        return game;
+
+    }
+    public Game findGameByID(int id){
+        String query = "Select * FROM " + TABLE_GAMES + " WHERE " + COLUMN_ID
+                + " =  \"" + id + "\"";
 
         SQLiteDatabase db = this.getWritableDatabase();
 

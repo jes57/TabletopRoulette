@@ -25,7 +25,7 @@ public class CollectionListView extends ActionBarActivity {
 
     String  GAME_ID = "148228",
             GAME_NAME = "Splendor",
-            name, game_id, game_to_delete;
+            name, bgg_id, game_id, game_to_delete;
 
     String[] gamesArray;
     ListView collectionListView;
@@ -65,14 +65,16 @@ public class CollectionListView extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (cursor.moveToPosition(position)) {
                     name = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
-                    game_id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID));
+                    bgg_id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID));
+                    game_id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_ID));
                 }
                 String gamePicked = "You selected " + name;
 
                 Toast.makeText(CollectionListView.this, gamePicked, Toast.LENGTH_SHORT).show();
 
-                Intent gameIntent = new Intent(CollectionListView.this, SearchDetails.class);
+                Intent gameIntent = new Intent(CollectionListView.this, GameInfo.class);
 
+                gameIntent.putExtra(Constants.EXTRAS_BGG_ID, bgg_id);
                 gameIntent.putExtra(Constants.EXTRAS_ID, game_id);
                 gameIntent.putExtra(Constants.EXTRAS_NAME, name);
                 startActivity(gameIntent);

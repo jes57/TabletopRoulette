@@ -53,20 +53,23 @@ public class SearchDetails extends ActionBarActivity{
     private void initialize() {
         // Get the game ID
         intent_extras = getIntent();
-        game_id = intent_extras.getExtras().getString(Constants.EXTRAS_ID);
-        query_url = Constants.URL_BGG_ID_SEARCH + game_id + Constants.URL_STATS;
-        dbHandler = new DBHandler(SearchDetails.this, null, null, 1);
+        Bundle bundle = intent_extras.getExtras();
+        if (bundle != null) {
+            game_id = bundle.getString(Constants.EXTRAS_BGG_ID);
+            query_url = Constants.URL_BGG_ID_SEARCH + game_id + Constants.URL_STATS;
+            dbHandler = new DBHandler(SearchDetails.this, null, null, 1);
 
-        setContentView(R.layout.game_info_layout);
-        textView_description = (TextView) findViewById(R.id.info_textView_description);
-        textView_title       = (TextView) findViewById(R.id.info_textView_title);
-        textView_details     = (TextView) findViewById(R.id.info_textView_addition_details);
-        textView_rating      = (TextView) findViewById(R.id.info_textView_rating);
-        textView_players     = (TextView) findViewById(R.id.info_textView_players);
-        textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
-        textView_mechanic    = (TextView) findViewById(R.id.info_textView_mechanic);
-        imageView            = (ImageView) findViewById(R.id.info_imageView_game_artwork);
-        button_add           = (Button) findViewById(R.id.info_button_add);
+            setContentView(R.layout.game_info_layout);
+            textView_description = (TextView) findViewById(R.id.info_textView_description);
+            textView_title       = (TextView) findViewById(R.id.info_textView_title);
+            textView_details     = (TextView) findViewById(R.id.info_textView_addition_details);
+            textView_rating      = (TextView) findViewById(R.id.info_textView_rating);
+            textView_players     = (TextView) findViewById(R.id.info_textView_players);
+            textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
+            textView_mechanic    = (TextView) findViewById(R.id.info_textView_mechanic);
+            imageView            = (ImageView) findViewById(R.id.info_imageView_game_artwork);
+            button_add           = (Button) findViewById(R.id.info_button_add);
+        }
     }
 
     @Override
@@ -79,16 +82,13 @@ public class SearchDetails extends ActionBarActivity{
         if (dbHandler.addGame(game_to_add)){
             if (image != null){
                 saveImageInternal(image);
-                String message = game_to_add.get_name() + " image added.";
-                Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
             }
-//            String message = game_to_add.get_name() + " added to collection.";
-//            Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
+            String message = game_to_add.get_name() + " added to collection.";
+            Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
         } else {
             String message = "Could not add. Game may already exist in database.";
             Toast.makeText(SearchDetails.this, message, Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void loadPage() {
