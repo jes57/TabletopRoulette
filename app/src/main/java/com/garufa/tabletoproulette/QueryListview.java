@@ -1,7 +1,5 @@
 package com.garufa.tabletoproulette;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -16,16 +14,14 @@ import android.widget.Toast;
 import java.util.ArrayList;
 
 /**
- * Created by Jason on 2/17/2015.
+ * Created by Jason on 3/26/2015.
  */
-public class CollectionListView extends ActionBarActivity {
-    private final static String TAG = "CollectionListView...";
+public class QueryListview extends ActionBarActivity {
+    private final static String TAG = "QueryListView...";
 
-    private Intent intent;
+    private Intent intent, intent_extras;
 
-    String  GAME_ID = "148228",
-            GAME_NAME = "Splendor",
-            name, bgg_id, game_id, game_to_delete;
+    String  name, bgg_id, game_id/*, players, time, rating, mechanic*/;
 
     String[] gamesArray;
     ListView collectionListView;
@@ -41,24 +37,24 @@ public class CollectionListView extends ActionBarActivity {
         initialize();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        setCollectionListView();
-    }
-
-    private void setCollectionListView() {
+    private void initialize() {
         dbHandler = new DBHandler(this, null, null, 1);
-        cursor = dbHandler.getAllGames();
+//        cursor = dbHandler.getAllGames();
 
+        // Get the extras
+        intent_extras = getIntent();
+        Bundle bundle = intent_extras.getExtras();
+        if (bundle != null) {
+            String players = bundle.getString(Constants.EXTRAS_PLAYERS);
+            String time    = bundle.getString(Constants.EXTRAS_TIME);
+            String rating  = bundle.getString(Constants.EXTRAS_RATING);
+            String mechanic= bundle.getString(Constants.EXTRAS_MECHANIC);
+            cursor = dbHandler.getGames(players, time, rating, mechanic);
+        }
         // Set the ListView
         collectionListView = (ListView) findViewById(R.id.collectionListView);
         GameCursorAdapter cursorAdapter = new GameCursorAdapter(this, cursor);
         collectionListView.setAdapter(cursorAdapter);
-    }
-
-    private void initialize() {
-        setCollectionListView();
         // Set the onClick event
         collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -70,9 +66,9 @@ public class CollectionListView extends ActionBarActivity {
                 }
                 String gamePicked = "You selected " + name;
 
-                Toast.makeText(CollectionListView.this, gamePicked, Toast.LENGTH_SHORT).show();
+                Toast.makeText(QueryListview.this, gamePicked, Toast.LENGTH_SHORT).show();
 
-                Intent gameIntent = new Intent(CollectionListView.this, GameInfo.class);
+                Intent gameIntent = new Intent(QueryListview.this, GameInfo.class);
 
                 gameIntent.putExtra(Constants.EXTRAS_BGG_ID, bgg_id);
                 gameIntent.putExtra(Constants.EXTRAS_ID, game_id);
@@ -80,41 +76,6 @@ public class CollectionListView extends ActionBarActivity {
                 startActivity(gameIntent);
             }
         });
-        collectionListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                return onLongListItemClick(view, position, id);
-            }
-        });
-    }
-
-    private boolean onLongListItemClick(View view, int position, long id) {
-        if (cursor.moveToPosition(position)) {
-            game_to_delete = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
-        } else {
-            return false;
-        }
-
-        AlertDialog.Builder alertDialog = new AlertDialog.Builder(CollectionListView.this)
-                .setTitle("Delete")
-                .setMessage("Delete " + game_to_delete + "?");
-        alertDialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dbHandler.deleteGame(game_to_delete);
-                setCollectionListView();
-            }
-        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).create();
-        alertDialog.show();
-
-        return true;
     }
 
     @Override
@@ -139,18 +100,14 @@ public class CollectionListView extends ActionBarActivity {
         switch (id){
             case R.id.action_settings: return true;
             case R.id.action_collection:
-                intent = new Intent(CollectionListView.this, CollectionListView.class);
+                intent = new Intent(QueryListview.this, CollectionListView.class);
                 startActivity(intent); break;
             case R.id.action_new_game:
-                intent = new Intent(CollectionListView.this, SearchListView.class);
+                intent = new Intent(QueryListview.this, SearchListView.class);
                 startActivity(intent); break;
             case R.id.action_query:
-                intent = new Intent(CollectionListView.this, QueryGames.class);
+                intent = new Intent(QueryListview.this, QueryGames.class);
                 startActivity(intent); break;
-            case R.id.action_mainActivity:
-                intent = new Intent(CollectionListView.this, MainActivity.class);
-                startActivity(intent); break;
-
         }
 
         return super.onOptionsItemSelected(item);

@@ -5,9 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteQueryBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 /**
  * Created by Jason on 3/7/2015.
@@ -17,6 +19,8 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "collectionDB.db";
     private static final String TABLE_GAMES   = "games";
+    private static final String SPACE = " ";
+    private static final String AND = " and ";
 
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_GAME_NAME = "game_name";
@@ -113,6 +117,7 @@ public class DBHandler extends SQLiteOpenHelper {
         return game;
 
     }
+
     public Game findGameByID(int id){
         String query = "Select * FROM " + TABLE_GAMES + " WHERE " + COLUMN_ID
                 + " =  \"" + id + "\"";
@@ -184,6 +189,32 @@ public class DBHandler extends SQLiteOpenHelper {
         if (cursor != null) {
             cursor.moveToFirst();
         }
+        return cursor;
+    }
+
+    public Cursor getGames(String players, String time, String rating, String mechanic) {
+        Cursor cursor;
+        if (players.isEmpty() && time.isEmpty() && rating.isEmpty() && mechanic.isEmpty()){
+            cursor = getAllGames();
+        } else {
+            SQLiteDatabase db = getReadableDatabase();
+
+            String _players_min, _players_max, _time, _rating;
+            _players_min = (players.isEmpty()) ? "0" : players;
+            _players_max = (players.isEmpty()) ? "100" : players;
+            _time = (time.isEmpty()) ? "1000" : time;
+            _rating = (rating.isEmpty()) ? "0" : rating;
+
+            String[] selectionArgs = {_players_min, _players_max, _time, _rating};
+            cursor = db.query(TABLE_GAMES, null,
+                    COLUMN_MAX_PLAYERS + " >=? AND " +
+                    COLUMN_MIN_PLAYERS + " <=? AND " +
+                    COLUMN_MAX_PLAY_TIME + " <=? AND " +
+                    COLUMN_RATING + " >=?",
+                    selectionArgs, null, null, COLUMN_RATING + " ASC");
+        }
+
+
         return cursor;
     }
 }

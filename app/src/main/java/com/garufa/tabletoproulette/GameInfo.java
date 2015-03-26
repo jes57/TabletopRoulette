@@ -34,8 +34,8 @@ public class GameInfo extends ActionBarActivity {
             GAME_ID = "148228";
 //            QUERY_URL = Constants.URL_BGG_ID_SEARCH + GAME_ID + Constants.URL_STATS;
 
-    private String game_name, query_url;
-    int game_id, bgg_id;
+    private String /*game_name,*/ query_url;
+//    int game_id, bgg_id;
     private Intent intent, intent_extras;
     TextView textView_description, textView_title, textView_details,
             textView_players, textView_playtime, textView_mechanic, textView_rating;
@@ -64,16 +64,15 @@ public class GameInfo extends ActionBarActivity {
         button_add           = (Button) findViewById(R.id.info_button_add);
 
         // Hide the button
-        button_add.setVisibility(View.INVISIBLE);
-        button_add.setHeight(0);
+        button_add.setVisibility(View.GONE);
 
         // Retrieve the extras to determine game
         intent_extras        = getIntent();
         Bundle bundle = intent_extras.getExtras();
         if (bundle != null){
-            game_id = Integer.parseInt(bundle.getString(Constants.EXTRAS_ID));
-            bgg_id = Integer.parseInt(bundle.getString(Constants.EXTRAS_BGG_ID));
-            game_name = bundle.getString(Constants.EXTRAS_NAME);
+            int game_id = Integer.parseInt(bundle.getString(Constants.EXTRAS_ID));
+            int bgg_id = Integer.parseInt(bundle.getString(Constants.EXTRAS_BGG_ID));
+            String game_name = bundle.getString(Constants.EXTRAS_NAME);
 
             // Find the game in the database
             dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
@@ -101,8 +100,8 @@ public class GameInfo extends ActionBarActivity {
             textView_mechanic.setText(game.get_game_mechanic());
 
             // Set the ImageView
-            String game_id = String.valueOf(game.get_bgg_id());
-            imageView.setImageBitmap(get_thumbnail(game_id));
+            String game_id_string = String.valueOf(game.get_bgg_id());
+            imageView.setImageBitmap(get_thumbnail(game_id_string));
         }
 
     }

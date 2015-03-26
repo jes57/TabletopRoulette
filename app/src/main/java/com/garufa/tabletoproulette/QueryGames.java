@@ -6,7 +6,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 /**
@@ -16,7 +18,9 @@ public class QueryGames extends ActionBarActivity {
 
     private Intent intent;
     private TextView idView;
-    EditText nameEditText, descriptionEditText;
+    EditText playersEditText, timeEditText, ratingEditText;
+    Spinner game_mechanic_spinner;
+    Button searchButton, luckyButton;
     DBHandler dbHandler;
 
     @Override
@@ -28,14 +32,23 @@ public class QueryGames extends ActionBarActivity {
     }
 
     private void initialize() {
-//        idView = (TextView) findViewById(R.id.tvGameID);
-//        nameEditText = (EditText) findViewById(R.id.query_editText_time);
-//        descriptionEditText = (EditText) findViewById(R.id.etGameDesc);
-//        dbHandler = new DBHandler(this, null, null, 1);
+        playersEditText         = (EditText) findViewById(R.id.query_players);
+        timeEditText            = (EditText) findViewById(R.id.query_editText_time);
+        ratingEditText          = (EditText) findViewById(R.id.query_rating);
+        game_mechanic_spinner   = (Spinner)  findViewById(R.id.query_spinner_game_mechanic);
+        searchButton            = (Button)   findViewById(R.id.query_buttonSearch);
+        luckyButton             = (Button)   findViewById(R.id.query_buttonLucky);
+        dbHandler               = new DBHandler(this, null, null, 1);
     }
 
     public void search (View view) {
+        intent = new Intent(QueryGames.this, QueryListview.class);
+        intent.putExtra(Constants.EXTRAS_PLAYERS, playersEditText.getText().toString());
+        intent.putExtra(Constants.EXTRAS_TIME, timeEditText.getText().toString());
+        intent.putExtra(Constants.EXTRAS_RATING, ratingEditText.getText().toString());
+        intent.putExtra(Constants.EXTRAS_MECHANIC, "");
 
+        startActivity(intent);
 //        Game game = new Game(nameEditText.getText().toString(),
 //                descriptionEditText.getText().toString());
 //

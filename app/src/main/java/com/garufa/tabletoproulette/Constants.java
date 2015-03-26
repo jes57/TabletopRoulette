@@ -10,7 +10,11 @@ public final class Constants {
             EXTRAS_BUNDLE   = "bundle",
             EXTRAS_NAME     = "game_name",
             EXTRAS_ID       = "bgg_id",
-            EXTRAS_BGG_ID   = "bgg_id";
+            EXTRAS_BGG_ID   = "bgg_id",
+            EXTRAS_PLAYERS  = "players",
+            EXTRAS_TIME     = "time",
+            EXTRAS_MECHANIC = "mechanic",
+            EXTRAS_RATING  = "rating";
 
     // BoardGameGeek Searching constants
     public static final String
