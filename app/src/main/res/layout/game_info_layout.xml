@@ -4,15 +4,15 @@
     android:layout_height="fill_parent"
     >
     <LinearLayout
-        android:orientation="vertical" android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:padding="5dp"
             android:layout_height="125dp"
-            android:background="@drawable/custom_border">
+            android:background="@drawable/custom_border_gray">
 
             <FrameLayout
                 android:layout_width="110dp"
@@ -63,19 +63,21 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="2dp"
             android:background="@drawable/custom_border">
+            <!--Players and time-->
             <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="#FFFFFF"
-                android:weightSum="4"
+                android:weightSum="2"
                 android:orientation="horizontal">
+                <!--Players-->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_weight="1">
                     <TextView
                         android:layout_width="wrap_content"
@@ -87,22 +89,50 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/info_label_mechanic"
-                        android:text="@string/mechanic"
+                        android:id="@+id/info_textView_players"
                         android:textSize="15sp"
                         android:padding="5dp"/>
-
-                    </LinearLayout>
-
+                </LinearLayout>
+                <!--Time-->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
+                    android:orientation="horizontal"
                     android:layout_weight="1">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/info_textView_players"
+                        android:id="@+id/info_label_playtime"
+                        android:text="@string/play_time"
+                        android:textSize="15sp"
+                        android:padding="5dp"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/info_textView_playtime"
+                        android:textSize="15sp"
+                        android:padding="5dp"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
+            <!--Game Mechanic-->
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#FFFFFF"
+                android:weightSum="2"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_weight="1">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/info_label_mechanic"
+                        android:text="@string/mechanic"
                         android:textSize="15sp"
                         android:padding="5dp"/>
                     <TextView
@@ -113,36 +143,14 @@
                         android:padding="5dp"/>
                     </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/info_label_playtime"
-                        android:text="@string/play_time"
-                        android:textSize="15sp"
-                        android:padding="5dp"/>
-
-                    </LinearLayout>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/info_textView_playtime"
-                        android:textSize="15sp"
-                        android:padding="5dp"/>
-
-                </LinearLayout>
-
             </LinearLayout>
+        </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
             </LinearLayout>
 
     <!--Description-->
@@ -172,21 +180,6 @@
     </LinearLayout>
 
         <!--Additional Details-->
-        <LinearLayout android:orientation="vertical" android:layout_width="match_parent"
-            android:layout_height="wrap_content" android:layout_gravity="center_horizontal"
-            android:background="@drawable/custom_border"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp">
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:textSize="20sp"
-                android:background="#FFFFFF"
-                android:id="@+id/info_textView_addition_details"
-                android:text="@string/additional_details"/>
-
-            </LinearLayout>
 
     </LinearLayout>
 </ScrollView>

@@ -62,7 +62,6 @@ public class SearchDetails extends ActionBarActivity{
             setContentView(R.layout.game_info_layout);
             textView_description = (TextView) findViewById(R.id.info_textView_description);
             textView_title       = (TextView) findViewById(R.id.info_textView_title);
-            textView_details     = (TextView) findViewById(R.id.info_textView_addition_details);
             textView_rating      = (TextView) findViewById(R.id.info_textView_rating);
             textView_players     = (TextView) findViewById(R.id.info_textView_players);
             textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
