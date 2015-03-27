@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +41,7 @@ public class SearchDetails extends ActionBarActivity{
             textView_players, textView_playtime, textView_mechanic;
     ImageView imageView;
     Button button_add;
+    RatingBar ratingBar;
     DBHandler dbHandler;
     Game game_to_add;
     Bitmap image;
@@ -67,6 +69,7 @@ public class SearchDetails extends ActionBarActivity{
             textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
             textView_mechanic    = (TextView) findViewById(R.id.info_textView_mechanic);
             imageView            = (ImageView) findViewById(R.id.info_imageView_game_artwork);
+            ratingBar            = (RatingBar) findViewById(R.id.info_ratingBar);
             button_add           = (Button) findViewById(R.id.info_button_add);
         }
     }
@@ -138,6 +141,7 @@ public class SearchDetails extends ActionBarActivity{
             textView_playtime.setText(time);
             textView_players.setText(players);
             textView_mechanic.setText(game_to_add.get_game_mechanic());
+            ratingBar.setRating(Float.parseFloat(String.valueOf(game_to_add.get_rating())));
         }
     }
 

@@ -1,29 +1,21 @@
 package com.garufa.tabletoproulette;
 
-        import android.content.Context;
         import android.content.Intent;
         import android.graphics.Bitmap;
         import android.graphics.BitmapFactory;
-        import android.os.AsyncTask;
         import android.support.v7.app.ActionBarActivity;
         import android.os.Bundle;
         import android.text.Html;
-        import android.util.Log;
         import android.view.Menu;
         import android.view.MenuItem;
         import android.view.View;
         import android.widget.Button;
         import android.widget.ImageView;
+        import android.widget.RatingBar;
         import android.widget.TextView;
-        import org.xmlpull.v1.XmlPullParserException;
 
         import java.io.File;
         import java.io.FileInputStream;
-        import java.io.IOException;
-        import java.io.InputStream;
-        import java.net.HttpURLConnection;
-        import java.net.URL;
-        import java.util.List;
 
 /**
  * Created by Jason on 2/18/2015.
@@ -41,6 +33,7 @@ public class GameInfo extends ActionBarActivity {
             textView_players, textView_playtime, textView_mechanic, textView_rating;
     ImageView imageView;
     Button button_add;
+    RatingBar ratingBar;
     Bitmap image;
     DBHandler dbHandler;
     Game game;
@@ -60,6 +53,7 @@ public class GameInfo extends ActionBarActivity {
         textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
         textView_mechanic    = (TextView) findViewById(R.id.info_textView_mechanic);
         imageView            = (ImageView) findViewById(R.id.info_imageView_game_artwork);
+        ratingBar            = (RatingBar) findViewById(R.id.info_ratingBar);
         button_add           = (Button) findViewById(R.id.info_button_add);
 
         // Hide the button
@@ -97,6 +91,7 @@ public class GameInfo extends ActionBarActivity {
             textView_playtime.setText(time);
             textView_players.setText(players);
             textView_mechanic.setText(game.get_game_mechanic());
+            ratingBar.setRating(Float.parseFloat(String.valueOf(game.get_rating())));
 
             // Set the ImageView
             String game_id_string = String.valueOf(game.get_bgg_id());

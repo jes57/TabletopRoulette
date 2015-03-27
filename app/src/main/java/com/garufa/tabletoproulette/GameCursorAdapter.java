@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.io.File;
@@ -34,26 +35,22 @@ public class GameCursorAdapter extends CursorAdapter {
         TextView  textView_title  = (TextView)  view.findViewById(R.id.adapter_textView_title);
         TextView  textView_players  = (TextView)  view.findViewById(R.id.adapter_textView_players);
         TextView  textView_time  = (TextView)  view.findViewById(R.id.adapter_textView_play_time);
-        TextView  textView_rating  = (TextView)  view.findViewById(R.id.adapter_textView_rating);
+        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.adapter_ratingBar);
 
         // Get the data
         String name = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
-        String players = get_players(cursor);
-        String time = get_time(cursor);
-        String rating = get_rating(cursor);
 
         String file_name = cursor.getString( cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID));
         imageView.setImageBitmap(get_thumbnail(context, file_name));
 
         textView_title.setText(name);
-        textView_players.setText(players);
-        textView_time.setText(time);
-        textView_rating.setText(rating);
+        textView_players.setText(get_players(cursor));
+        textView_time.setText(get_time(cursor));
+        ratingBar.setRating(Float.parseFloat(get_rating(cursor)));
     }
 
     private String get_rating(Cursor cursor) {
-        String rating = "Rating: " +
-                cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_RATING));
+        String rating = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_RATING));
         return rating;
     }
 
