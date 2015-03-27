@@ -31,14 +31,58 @@ public class GameCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ImageView imageView = (ImageView) view.findViewById(R.id.adapter_imageView);
-        TextView  textView  = (TextView)  view.findViewById(R.id.adapter_textView_title);
+        TextView  textView_title  = (TextView)  view.findViewById(R.id.adapter_textView_title);
+        TextView  textView_players  = (TextView)  view.findViewById(R.id.adapter_textView_players);
+        TextView  textView_time  = (TextView)  view.findViewById(R.id.adapter_textView_play_time);
+        TextView  textView_rating  = (TextView)  view.findViewById(R.id.adapter_textView_rating);
+
+        // Get the data
         String name = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
+        String players = get_players(cursor);
+        String time = get_time(cursor);
+        String rating = get_rating(cursor);
 
         String file_name = cursor.getString( cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID));
         imageView.setImageBitmap(get_thumbnail(context, file_name));
 
-        textView.setText(name);
+        textView_title.setText(name);
+        textView_players.setText(players);
+        textView_time.setText(time);
+        textView_rating.setText(rating);
     }
+
+    private String get_rating(Cursor cursor) {
+        String rating = "Rating: " +
+                cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_RATING));
+        return rating;
+    }
+
+    private String get_time(Cursor cursor) {
+        String play_time_min, play_time_max, play_time;
+        play_time_min = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_MIN_PLAY_TIME));
+        play_time_max = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_MAX_PLAY_TIME));
+
+        if (play_time_max.equals(play_time_min)) {
+            play_time = play_time_min;
+        } else {
+            play_time = play_time_min + "-" + play_time_max;
+        }
+        return play_time;
+    }
+
+    private String get_players(Cursor cursor) {
+        String players_min, players_max, players;
+        players_min = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_MIN_PLAYERS));
+        players_max = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_MAX_PLAYERS));
+
+        if (players_max.equals(players_min)) {
+            players = players_min;
+        } else {
+            players = players_min + "-" + players_max;
+        }
+        return players;
+    }
+
     public Bitmap get_thumbnail(Context context, String game_id) {
         String file_name = game_id + Constants.FILE_TYPE;
 
