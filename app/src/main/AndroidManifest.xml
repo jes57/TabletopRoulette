@@ -71,6 +71,14 @@
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name=".QueryRandom"
+            android:parentActivityName=".QueryGames"
+            android:icon="@drawable/ic_launcher"
+            android:label=""
+            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait">
+        </activity>
     </application>
 
 </manifest>

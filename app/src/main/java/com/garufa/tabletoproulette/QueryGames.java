@@ -49,23 +49,15 @@ public class QueryGames extends ActionBarActivity {
         intent.putExtra(Constants.EXTRAS_MECHANIC, "");
 
         startActivity(intent);
-//        Game game = new Game(nameEditText.getText().toString(),
-//                descriptionEditText.getText().toString());
-//
-//        dbHandler.addGame(game);
-//        nameEditText.setText("");
-//        descriptionEditText.setText("");
     }
     public void randomGame (View view) {
+        intent = new Intent(QueryGames.this, QueryRandom.class);
+        intent.putExtra(Constants.EXTRAS_PLAYERS, playersEditText.getText().toString());
+        intent.putExtra(Constants.EXTRAS_TIME, timeEditText.getText().toString());
+        intent.putExtra(Constants.EXTRAS_RATING, ratingEditText.getText().toString());
+        intent.putExtra(Constants.EXTRAS_MECHANIC, "");
 
-//        Game game = dbHandler.findGame(nameEditText.getText().toString());
-//
-//        if (game != null) {
-//            idView.setText(String.valueOf(game.get_id()));
-//            descriptionEditText.setText(game.get_description());
-//        } else {
-//            idView.setText("No Match Found");
-//        }
+        startActivity(intent);
     }
     public void removeGame (View view) {
 

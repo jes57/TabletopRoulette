@@ -113,6 +113,7 @@ public class GameInfo extends ActionBarActivity {
             return BitmapFactory.decodeResource(getResources(), R.drawable.tabletoproulet);
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

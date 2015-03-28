@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
+import java.util.Random;
 
 /**
  * Created by Jason on 3/7/2015.
@@ -190,6 +191,30 @@ public class DBHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
         }
         return cursor;
+    }
+
+    public Game getRandomGame(String players, String time, String rating, String mechanic) {
+        Cursor cursor = getGames(players, time, rating, mechanic);
+        Game game = new Game();
+        Random random = new Random();
+        int rand = random.nextInt(cursor.getCount());
+        if (cursor.moveToPosition(rand)) {
+            game.set_id(Integer.parseInt(cursor.getString(0)));
+            game.set_name(cursor.getString(1));
+            game.set_bgg_id(Integer.parseInt(cursor.getString(2)));
+            game.set_min_players(Integer.parseInt(cursor.getString(3)));
+            game.set_max_players(Integer.parseInt(cursor.getString(4)));
+            game.set_min_play_time(Integer.parseInt(cursor.getString(5)));
+            game.set_max_play_time(Integer.parseInt(cursor.getString(6)));
+            game.set_description(cursor.getString(7));
+            game.set_game_mechanic(cursor.getString(8));
+            game.set_rating(Double.parseDouble(cursor.getString(9)));
+            game.set_image_url(cursor.getString(10));
+            cursor.close();
+        } else {
+            game = null;
+        }
+        return game;
     }
 
     public Cursor getGames(String players, String time, String rating, String mechanic) {

@@ -10,7 +10,7 @@ import android.util.Log;
  * Created by Jason on 2/15/2015.
  */
 public class Splash extends Activity {
-    private final int SPLASH_DISPLAY_LENGTH = 3000; // 3 Seconds
+    private final int SPLASH_DISPLAY_LENGTH = 1500; // 1.5 Seconds
     String TAG = "Splash";
 
     @Override
