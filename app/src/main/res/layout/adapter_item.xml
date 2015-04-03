@@ -76,7 +76,7 @@
                 android:numStars="10"
                 android:rating="5"
                 style="?android:attr/ratingBarStyleSmall"
-                android:stepSize=".5" />
+                android:stepSize=".1" />
         </LinearLayout>
     </LinearLayout>
 
