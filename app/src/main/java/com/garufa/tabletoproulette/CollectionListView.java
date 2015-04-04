@@ -6,10 +6,12 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -21,11 +23,13 @@ import java.util.ArrayList;
 public class CollectionListView extends ActionBarActivity {
     private final static String TAG = "CollectionListView...";
 
-    private Intent intent;
+    private Intent intent, intent_extras;
 
     String  GAME_ID = "148228",
             GAME_NAME = "Splendor",
             name, bgg_id, game_id, game_to_delete;
+
+    String players, time, rating, mechanic;
 
     String[] gamesArray;
     ListView collectionListView;
@@ -38,18 +42,44 @@ public class CollectionListView extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.collection_layout);
+
+        if (savedInstanceState != null) {
+            players = savedInstanceState.getString(Constants.EXTRAS_PLAYERS);
+            time = savedInstanceState.getString(Constants.EXTRAS_TIME);
+            rating = savedInstanceState.getString(Constants.EXTRAS_RATING);
+            mechanic = savedInstanceState.getString(Constants.EXTRAS_MECHANIC);
+        } else {
+            players = rating = time = mechanic = "";
+        }
+
         initialize();
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        setCollectionListView();
+    protected void onSaveInstanceState(Bundle outState) {
+        // Save the users filter
+        outState.putString(Constants.EXTRAS_PLAYERS, players);
+        outState.putString(Constants.EXTRAS_TIME, time);
+        outState.putString(Constants.EXTRAS_RATING, rating);
+        outState.putString(Constants.EXTRAS_MECHANIC, mechanic);
+
+        super.onSaveInstanceState(outState);
     }
 
-    private void setCollectionListView() {
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setCollectionListView(players, time, rating, mechanic);
+    }
+
+    private void setCollectionListView(String players, String time, String rating, String mechanic) {
         dbHandler = new DBHandler(this, null, null, 1);
-        cursor = dbHandler.getAllGames();
+        if (players.equals("") && time.equals("") && rating.equals("") && mechanic.equals("")){
+            cursor = dbHandler.getAllGames();
+        } else {
+            cursor = dbHandler.getGames(players, time, rating, mechanic);
+        }
 
         // Set the ListView
         collectionListView = (ListView) findViewById(R.id.collectionListView);
@@ -58,7 +88,7 @@ public class CollectionListView extends ActionBarActivity {
     }
 
     private void initialize() {
-        setCollectionListView();
+        setCollectionListView(players, time, rating, mechanic);
         // Set the onClick event
         collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -89,6 +119,37 @@ public class CollectionListView extends ActionBarActivity {
         });
     }
 
+    // Display the alert dialog to filter
+    private void displayFilterDialog() {
+        LayoutInflater layoutInflater = LayoutInflater.from(CollectionListView.this);
+        View promptView = layoutInflater.inflate(R.layout.filter_dialog, null);
+        AlertDialog.Builder builder = new AlertDialog.Builder(CollectionListView.this);
+        builder.setView(promptView);
+        builder.setTitle("Filter");
+        builder.setIcon(R.drawable.ic_action_filter);
+        final EditText playersEditText = (EditText) promptView.findViewById(R.id.filter_players_EditText);
+        final EditText timeEditText = (EditText) promptView.findViewById(R.id.filter_time_EditText);
+        final EditText ratingEditText = (EditText) promptView.findViewById(R.id.filter_rating_EditText);
+        builder.setCancelable(false).setPositiveButton("Filter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                players = playersEditText.getText().toString();
+                time = timeEditText.getText().toString();
+                rating = ratingEditText.getText().toString();
+                setCollectionListView(players, time, rating, mechanic);
+            }
+        }).setNegativeButton("Clear Filter", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                players = time = rating = mechanic = "";
+                setCollectionListView(players, time, rating, mechanic);
+            }
+        });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
     private boolean onLongListItemClick(View view, int position, long id) {
         if (cursor.moveToPosition(position)) {
             game_to_delete = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
@@ -104,7 +165,7 @@ public class CollectionListView extends ActionBarActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dbHandler.deleteGame(game_to_delete);
-                setCollectionListView();
+                setCollectionListView(players, time, rating, mechanic);
             }
         }).setNegativeButton("No", new DialogInterface.OnClickListener() {
             @Override
@@ -140,19 +201,20 @@ public class CollectionListView extends ActionBarActivity {
             case R.id.action_settings: return true;
             case R.id.action_collection:
                 intent = new Intent(CollectionListView.this, CollectionListView.class);
-                startActivity(intent); break;
+                startActivity(intent); finish(); break;
             case R.id.action_new_game:
                 intent = new Intent(CollectionListView.this, SearchListView.class);
                 startActivity(intent); break;
-            case R.id.action_query:
-                intent = new Intent(CollectionListView.this, QueryGames.class);
-                startActivity(intent); break;
-            case R.id.action_mainActivity:
-                intent = new Intent(CollectionListView.this, MainActivity.class);
-                startActivity(intent); break;
-
+            case R.id.action_filter:
+                displayFilterDialog(); break;
+//                intent = new Intent(CollectionListView.this, QueryGames.class);
+//                startActivity(intent); break;
+            case R.id.action_random_game:
+                displayFilterDialog(); break;
         }
 
         return super.onOptionsItemSelected(item);
     }
+
+
 }

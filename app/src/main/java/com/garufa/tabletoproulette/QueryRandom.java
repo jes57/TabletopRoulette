@@ -1,7 +1,6 @@
 package com.garufa.tabletoproulette;
 
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -18,7 +17,6 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.Random;
 
 /**
  * Created by Jason on 3/28/2015.
@@ -153,7 +151,7 @@ public class QueryRandom extends ActionBarActivity {
             case R.id.action_new_game:
                 intent = new Intent(QueryRandom.this, SearchListView.class);
                 startActivity(intent); break;
-            case R.id.action_query:
+            case R.id.action_filter:
                 intent = new Intent(QueryRandom.this, QueryGames.class);
                 startActivity(intent); break;
 

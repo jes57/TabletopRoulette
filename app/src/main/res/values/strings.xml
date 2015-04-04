@@ -33,6 +33,9 @@
     <string name="minutes_string">minutes</string>
     <string name="game_mechanic_string">Game Mechanic</string>
     <string name="min_rating_string">Min. Rating</string>
+    <string name="acion_filter_string">Filter</string>
+    <string name="hint_string">Enter text here..</string>
+    <string name="random_game_string">Random Game</string>
     <string-array name="games_array">
         <item>Alhambra</item>
         <item>Carcassonne</item>

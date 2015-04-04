@@ -105,7 +105,7 @@ public class QueryListview extends ActionBarActivity {
             case R.id.action_new_game:
                 intent = new Intent(QueryListview.this, SearchListView.class);
                 startActivity(intent); break;
-            case R.id.action_query:
+            case R.id.action_filter:
                 intent = new Intent(QueryListview.this, QueryGames.class);
                 startActivity(intent); break;
         }
