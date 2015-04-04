@@ -11,7 +11,7 @@
         android:icon="@drawable/ic_action_filter"/>
     <item android:id="@+id/action_new_game" android:title="@string/find_new_game"
         android:orderInCategory="102" app:showAsAction="always"
-        android:icon="@drawable/ic_action_search" />
+        android:icon="@drawable/ic_action_search_add" />
     <item android:id="@+id/action_random_game" android:title="@string/random_game_string"
         android:orderInCategory="103" app:showAsAction="always"
         android:icon="@drawable/ic_action_die" />

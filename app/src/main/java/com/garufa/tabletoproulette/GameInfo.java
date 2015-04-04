@@ -20,7 +20,7 @@ package com.garufa.tabletoproulette;
 /**
  * Created by Jason on 2/18/2015.
  */
-public class GameInfo extends ActionBarActivity {
+public class GameInfo extends BaseActivity {
     private static final String
             TAG = "XML Parser",
             GAME_ID = "148228";
@@ -112,41 +112,6 @@ public class GameInfo extends ActionBarActivity {
             e.printStackTrace();
             return BitmapFactory.decodeResource(getResources(), R.drawable.tabletoproulet);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
-        switch (id){
-            case R.id.action_settings: return true;
-            case R.id.action_collection:
-                intent = new Intent(GameInfo.this, CollectionListView.class);
-                startActivity(intent); break;
-            case R.id.action_new_game:
-                intent = new Intent(GameInfo.this, SearchListView.class);
-                startActivity(intent); break;
-            case R.id.action_filter:
-                intent = new Intent(GameInfo.this, QueryGames.class);
-                startActivity(intent); break;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
 

@@ -5,11 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.EditText;
@@ -27,7 +24,7 @@ import java.util.List;
 /**
  * Created by Jason on 3/14/2015.
  */
-public class SearchListView extends ActionBarActivity {
+public class SearchListView extends BaseActivity {
 
     private Intent intent;
 
@@ -50,43 +47,11 @@ public class SearchListView extends ActionBarActivity {
 
     private void initialize() {
         // Set the AlertDialog to accept the search parameter
-        displayAlertDialog();
+        displaySearchDialog();
         setContentView(R.layout.collection_layout);
-//        loadPage();
-//        gameObjectsArrayList.add(new Game("Splendor", "Super fun"));
-//        gameObjectsArrayList.add(new Game("Splendorifous", "Not fun"));
-
-
-//        dbHandler = new DBHandler(this, null, null, 1);
-//        cursor = dbHandler.getAllGames();
-//
-//        // Set the ListView
-//        collectionListView = (ListView) findViewById(R.id.collectionListView);
-//        GameCursorAdapter cursorAdapter = new GameCursorAdapter(this, cursor);
-//        collectionListView.setAdapter(cursorAdapter);
-//
-//        // Set the onClick event
-//        collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                if (cursor.moveToPosition(position)) {
-//                    name = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
-//                    bgg_id = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_BGG_ID));
-//                }
-//                String gamePicked = "You selected " + name;
-//
-//                Toast.makeText(SearchListView.this, gamePicked, Toast.LENGTH_SHORT).show();
-//
-//                Intent gameIntent = new Intent(SearchListView.this, GameInfo.class);
-//
-//                gameIntent.putExtra(Constants.EXTRAS_ID, GAME_ID);
-//                gameIntent.putExtra(Constants.EXTRAS_NAME, name);
-//                startActivity(gameIntent);
-//            }
-//        });
     }
 
-    private void displayAlertDialog() {
+    private void displaySearchDialog() {
         LayoutInflater layoutInflater = LayoutInflater.from(SearchListView.this);
         View promptView = layoutInflater.inflate(R.layout.input_dialog, null);
         builder = new AlertDialog.Builder(SearchListView.this);
@@ -192,43 +157,5 @@ public class SearchListView extends ActionBarActivity {
         conn.connect();
         InputStream stream = conn.getInputStream();
         return stream;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
-        switch (id) {
-            case R.id.action_settings:
-                return true;
-            case R.id.action_collection:
-                intent = new Intent(SearchListView.this, CollectionListView.class);
-                startActivity(intent);
-                break;
-            case R.id.action_new_game:
-                intent = new Intent(SearchListView.this, SearchListView.class);
-                startActivity(intent); break;
-            case R.id.action_filter:
-                intent = new Intent(SearchListView.this, QueryGames.class);
-                startActivity(intent);
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

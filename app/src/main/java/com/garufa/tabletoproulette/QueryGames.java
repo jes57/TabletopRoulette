@@ -14,7 +14,7 @@ import android.widget.TextView;
 /**
  * Created by Jason on 3/7/2015.
  */
-public class QueryGames extends ActionBarActivity {
+public class QueryGames extends BaseActivity {
 
     private Intent intent;
     private TextView idView;
@@ -58,54 +58,5 @@ public class QueryGames extends ActionBarActivity {
         intent.putExtra(Constants.EXTRAS_MECHANIC, "");
 
         startActivity(intent);
-    }
-    public void removeGame (View view) {
-
-//        boolean result = dbHandler.deleteGame(nameEditText.getText().toString());
-//
-//        if (result){
-//            idView.setText("Record Deleted");
-//            nameEditText.setText("");
-//            descriptionEditText.setText("");
-//        } else {
-//            idView.setText("No Match Found");
-//        }
-
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
-        switch (id){
-            case R.id.action_settings: return true;
-            case R.id.action_collection:
-                intent = new Intent(QueryGames.this, CollectionListView.class);
-                startActivity(intent); break;
-            case R.id.action_new_game:
-                intent = new Intent(QueryGames.this, SearchListView.class);
-                startActivity(intent); break;
-            case R.id.action_filter:
-                intent = new Intent(QueryGames.this, QueryGames.class);
-                startActivity(intent); break;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

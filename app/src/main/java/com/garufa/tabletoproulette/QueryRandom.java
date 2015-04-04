@@ -21,7 +21,7 @@ import java.io.FileInputStream;
 /**
  * Created by Jason on 3/28/2015.
  */
-public class QueryRandom extends ActionBarActivity {
+public class QueryRandom extends BaseActivity {
     private Intent intent, intent_extras;
     TextView textView_description, textView_title, textView_details,
             textView_players, textView_playtime, textView_mechanic, textView_rating;
@@ -39,7 +39,6 @@ public class QueryRandom extends ActionBarActivity {
     }
 
     private void initialize() {
-        setContentView(R.layout.game_info_layout);
         setContentView(R.layout.game_info_layout);
         textView_description = (TextView) findViewById(R.id.info_textView_description);
         textView_title       = (TextView) findViewById(R.id.info_textView_title);
@@ -122,41 +121,5 @@ public class QueryRandom extends ActionBarActivity {
             e.printStackTrace();
             return BitmapFactory.decodeResource(getResources(), R.drawable.tabletoproulet);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
-        switch (id){
-            case R.id.action_settings: return true;
-            case R.id.action_collection:
-                intent = new Intent(QueryRandom.this, CollectionListView.class);
-                startActivity(intent); break;
-            case R.id.action_new_game:
-                intent = new Intent(QueryRandom.this, SearchListView.class);
-                startActivity(intent); break;
-            case R.id.action_filter:
-                intent = new Intent(QueryRandom.this, QueryGames.class);
-                startActivity(intent); break;
-
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

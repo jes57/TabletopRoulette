@@ -29,11 +29,9 @@ import java.util.List;
 /**
  * Created by Jason on 3/15/2015.
  */
-public class SearchDetails extends ActionBarActivity{
+public class SearchDetails extends BaseActivity{
     private static final String
-            TAG = "Search Details...",
-            GAME_ID = "148228";
-//            QUERY_URL = Constants.URL_BGG_ID_SEARCH + GAME_ID + Constants.URL_STATS;
+            TAG = "Search Details...";
 
     private String game_id, game_name, query_url;
     private Intent intent, intent_extras;
@@ -192,42 +190,6 @@ public class SearchDetails extends ActionBarActivity{
         conn.connect();
         InputStream stream = conn.getInputStream();
         return stream;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
-        switch (id){
-            case R.id.action_settings: return true;
-            case R.id.action_collection:
-                intent = new Intent(SearchDetails.this, CollectionListView.class);
-                startActivity(intent); break;
-            case R.id.action_new_game:
-                intent = new Intent(SearchDetails.this, SearchListView.class);
-                startActivity(intent); break;
-            case R.id.action_filter:
-                intent = new Intent(SearchDetails.this, QueryGames.class);
-                startActivity(intent); break;
-
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
 

@@ -35,7 +35,7 @@
             android:name=".GameInfo"
             android:parentActivityName=".CollectionListView"
             android:icon="@drawable/ic_launcher"
-            android:label=""
+            android:label="Details"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
@@ -51,7 +51,7 @@
             android:name=".SearchListView"
             android:parentActivityName=".QueryGames"
             android:icon="@drawable/ic_launcher"
-            android:label=""
+            android:label="@string/search_string"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
@@ -59,7 +59,7 @@
             android:name=".SearchDetails"
             android:parentActivityName=".QueryGames"
             android:icon="@drawable/ic_launcher"
-            android:label=""
+            android:label="@string/details_string"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
@@ -75,7 +75,7 @@
             android:name=".QueryRandom"
             android:parentActivityName=".QueryGames"
             android:icon="@drawable/ic_launcher"
-            android:label=""
+            android:label="@string/details_string"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>
