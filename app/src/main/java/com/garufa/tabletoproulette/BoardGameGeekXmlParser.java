@@ -52,7 +52,7 @@ public class BoardGameGeekXmlParser {
 
     private Game readSearchEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "boardgame");
-        int bgg_id = 0;
+        int bgg_id = 0, year = 0;
         String name = "";
 
         bgg_id = Integer.parseInt(parser.getAttributeValue(ns, "objectid"));
@@ -64,10 +64,11 @@ public class BoardGameGeekXmlParser {
             String tag_name = parser.getName();
             switch (tag_name){
                 case "name": name = readName(parser); break;
+                case "yearpublished": year = readYear(parser); break;
                 default: skip(parser);
             }
         }
-        return new Game(name, bgg_id);
+        return new Game(name, bgg_id, year);
     }
 
     public List<Game> parse(InputStream in) throws XmlPullParserException, IOException {
@@ -103,7 +104,7 @@ public class BoardGameGeekXmlParser {
 
     private Game readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "boardgame");
-        int bgg_id = 0, min_players = 0, max_players = 0, min_play_time = 0, max_play_time = 0;
+        int bgg_id = 0, min_players = 0, max_players = 0, min_play_time = 0, max_play_time = 0, year = 0;
         String name = "Unavailable", description = "Unavailable", game_mechanic = null, image_url = null;
         double rating = 0;
 
@@ -128,6 +129,7 @@ public class BoardGameGeekXmlParser {
                 case "maxplaytime": max_play_time = readMaxPlayTime(parser); break;
                 case "description": description = readDescription(parser); break;
                 case "boardgamemechanic": game_mechanic = readGameMechanic(parser); break;
+                case "yearpublished": year = readYear(parser); break;
                 case "statistics": rating = readStats(parser); break;
                 case "thumbnail": image_url = readImageUrl(parser);
                     image_url = "http:" + image_url; break;
@@ -135,7 +137,7 @@ public class BoardGameGeekXmlParser {
             }
         }
         return new Game(name, bgg_id, min_players, max_players, min_play_time, max_play_time,
-                description, game_mechanic, rating, image_url);
+                description, game_mechanic, rating, image_url, year);
     }
 
     private double readStats(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -250,6 +252,13 @@ public class BoardGameGeekXmlParser {
         String image_url = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "thumbnail");
         return image_url;
+    }
+
+    private Integer readYear(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "yearpublished");
+        String year_published = readText(parser);
+        parser.require(XmlPullParser.END_TAG, ns, "yearpublished");
+        return Integer.parseInt(year_published);
     }
 
     // For the tags title and summary, extracts their text values.

@@ -37,6 +37,7 @@
     <string name="hint_string">Enter text here..</string>
     <string name="random_game_string">Random Game</string>
     <string name="details_string">Details</string>
+    <string name="published_string">Published:</string>
     <string-array name="games_array">
         <item>Alhambra</item>
         <item>Carcassonne</item>

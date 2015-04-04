@@ -27,11 +27,19 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_game_no_image,
                     parent, false);
         }
+
         // Lookup view for data population
         TextView textView_name = (TextView) convertView.findViewById(R.id.textView_item_name);
-//        TextView textView_year = (TextView) convertView.findViewById(R.id.textView_item_year);
+        TextView textView_year = (TextView) convertView.findViewById(R.id.item_year_TextView);
+
         // Populate the data into the template view using the data object
         textView_name.setText(game.get_name());
+        String year = String.valueOf(game.get_year());
+        if (year.equals("0")) {
+            textView_year.setVisibility(View.GONE);
+        } else {
+            textView_year.setText(year);
+        }
         // Return the completed view to render on screen
         return convertView;
     }

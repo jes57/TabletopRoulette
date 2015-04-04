@@ -36,7 +36,7 @@ public class SearchDetails extends BaseActivity{
     private String game_id, game_name, query_url;
     private Intent intent, intent_extras;
     TextView textView_description, textView_title, textView_details, textView_rating,
-            textView_players, textView_playtime, textView_mechanic;
+            textView_players, textView_playtime, textView_mechanic, textView_year, textView_published;
     ImageView imageView;
     Button button_add;
     RatingBar ratingBar;
@@ -57,7 +57,7 @@ public class SearchDetails extends BaseActivity{
         if (bundle != null) {
             game_id = bundle.getString(Constants.EXTRAS_BGG_ID);
             query_url = Constants.URL_BGG_ID_SEARCH + game_id + Constants.URL_STATS;
-            dbHandler = new DBHandler(SearchDetails.this, null, null, 1);
+            dbHandler = new DBHandler(SearchDetails.this, null, null, DBHandler.DATABASE_VERSION);
 
             setContentView(R.layout.game_info_layout);
             textView_description = (TextView) findViewById(R.id.info_textView_description);
@@ -66,6 +66,8 @@ public class SearchDetails extends BaseActivity{
             textView_players     = (TextView) findViewById(R.id.info_textView_players);
             textView_playtime    = (TextView) findViewById(R.id.info_textView_playtime);
             textView_mechanic    = (TextView) findViewById(R.id.info_textView_mechanic);
+            textView_year        = (TextView) findViewById(R.id.info_year);
+            textView_published   = (TextView) findViewById(R.id.info_published);
             imageView            = (ImageView) findViewById(R.id.info_imageView_game_artwork);
             ratingBar            = (RatingBar) findViewById(R.id.info_ratingBar);
             button_add           = (Button) findViewById(R.id.info_button_add);
@@ -134,6 +136,13 @@ public class SearchDetails extends BaseActivity{
                 }
             }).execute();
             textView_title.setText(game_to_add.get_name());
+            String year = String.valueOf(game_to_add.get_year());
+            if (year.equals("0")) {
+                textView_year.setVisibility(View.GONE);
+
+            } else {
+                textView_year.setText(year);
+            }
             textView_description.setText(Html.fromHtml(game_to_add.get_description()));
             textView_rating.setText(String.valueOf(game_to_add.get_rating()));
             textView_playtime.setText(time);

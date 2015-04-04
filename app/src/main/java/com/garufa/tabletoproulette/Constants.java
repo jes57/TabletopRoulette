@@ -36,7 +36,8 @@ public final class Constants {
             COLUMN_IMAGE_URL     = "image_url",
             COLUMN_GAME_MECHANIC = "game_mechanic",
             COLUMN_BGG_ID = "bgg_id",
-            COLUMN_RATING = "rating";
+            COLUMN_RATING = "rating",
+            COLUMN_YEAR = "year";
 
     // Other Constants
     public static final String FILE_TYPE = ".png";

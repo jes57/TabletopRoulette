@@ -14,13 +14,13 @@ import java.net.URL;
  */
 public class Game {
 
-    private int _id, _bgg_id, _min_players, _max_players, _min_play_time, _max_play_time;
+    private int _id, _bgg_id, _min_players, _max_players, _min_play_time, _max_play_time, _year;
     private String _name, _description, _game_mechanic, _image_url;
     private double _rating;
 
     public Game(){}
 
-    public Game(String name, int bgg_id){
+    public Game(String name, int bgg_id, int year){
         this._bgg_id        = bgg_id;
         this._name          = name;
         this._min_players   = 0;
@@ -31,6 +31,7 @@ public class Game {
         this._game_mechanic = "";
         this._image_url     = "";
         this._rating        = 0;
+        this._year          = year;
     }
 
     public Game(String name, String desc){
@@ -44,6 +45,7 @@ public class Game {
         this._game_mechanic = "";
         this._image_url     = "";
         this._rating        = 0;
+        this._year          = 0;
     }
     public Game(int id, String name, int bgg_id, int min_players, int max_players, int min_play_time,
                 int max_play_time, String desc, String game_mechanic, double rating, String url){
@@ -58,9 +60,11 @@ public class Game {
         this._game_mechanic = game_mechanic;
         this._rating        = rating;
         this._image_url     = url;
+        this._year          = 0;
     }
     public Game(String name, int bgg_id, int min_players, int max_players, int min_play_time,
-                int max_play_time, String desc, String game_mechanic, double rating, String url){
+                int max_play_time, String desc, String game_mechanic, double rating, String url,
+                int year){
         this._name          = name;
         this._bgg_id        = bgg_id;
         this._min_players   = min_players;
@@ -71,6 +75,7 @@ public class Game {
         this._game_mechanic = game_mechanic;
         this._rating        = rating;
         this._image_url     = url;
+        this._year          = year;
     }
 
     public int      get_id()            { return _id; }
@@ -83,6 +88,7 @@ public class Game {
     public int      get_min_play_time() { return _min_play_time; }
     public int      get_max_play_time() { return _max_play_time; }
     public int      get_bgg_id()        { return _bgg_id; }
+    public int      get_year()          { return _year; }
     public double   get_rating()        { return _rating; }
 
     // Get the image from internal storage
@@ -109,7 +115,7 @@ public class Game {
     public void set_min_play_time(int _min_play_time)   { this._min_play_time = _min_play_time; }
     public void set_bgg_id(int _bgg_id)                 { this._bgg_id = _bgg_id; }
     public void set_rating(double rating)               { this._rating = rating; }
-
+    public void set_year(int year)                      { this._year = year; }
 
 
 

@@ -17,7 +17,7 @@ import java.util.Random;
  */
 public class DBHandler extends SQLiteOpenHelper {
 
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "collectionDB.db";
     private static final String TABLE_GAMES   = "games";
     private static final String SPACE = " ";
@@ -34,6 +34,7 @@ public class DBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_GAME_MECHANIC = "game_mechanic";
     public static final String COLUMN_BGG_ID = "bgg_id";
     public static final String COLUMN_RATING = "rating";
+    public static final String COLUMN_YEAR = "year";
 
     public DBHandler(Context context, String name,
                      SQLiteDatabase.CursorFactory factory, int version) {
@@ -53,6 +54,7 @@ public class DBHandler extends SQLiteOpenHelper {
                 + COLUMN_DESCRIPTION + " TEXT,"
                 + COLUMN_GAME_MECHANIC + " TEXT,"
                 + COLUMN_RATING + " DECIMAL(3,2),"
+                + COLUMN_YEAR + " INTEGER,"
                 + COLUMN_IMAGE_URL + " TEXT" + ")";
         db.execSQL(CREATE_GAMES_TABLE);
     }
@@ -74,6 +76,7 @@ public class DBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_MAX_PLAY_TIME, game.get_max_play_time());
         values.put(COLUMN_GAME_MECHANIC, game.get_game_mechanic());
         values.put(COLUMN_RATING, game.get_rating());
+        values.put(COLUMN_YEAR, game.get_year());
         values.put(COLUMN_IMAGE_URL, game.get_image_url());
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -109,7 +112,8 @@ public class DBHandler extends SQLiteOpenHelper {
             game.set_description(cursor.getString(7));
             game.set_game_mechanic(cursor.getString(8));
             game.set_rating(Double.parseDouble(cursor.getString(9)));
-            game.set_image_url(cursor.getString(10));
+            game.set_year(Integer.parseInt(cursor.getString(10)));
+            game.set_image_url(cursor.getString(11));
             cursor.close();
         } else {
             game = null;
@@ -141,7 +145,8 @@ public class DBHandler extends SQLiteOpenHelper {
             game.set_description(cursor.getString(7));
             game.set_game_mechanic(cursor.getString(8));
             game.set_rating(Double.parseDouble(cursor.getString(9)));
-            game.set_image_url(cursor.getString(10));
+            game.set_year(Integer.parseInt(cursor.getString(10)));
+            game.set_image_url(cursor.getString(11));
             cursor.close();
         } else {
             game = null;
@@ -209,7 +214,8 @@ public class DBHandler extends SQLiteOpenHelper {
             game.set_description(cursor.getString(7));
             game.set_game_mechanic(cursor.getString(8));
             game.set_rating(Double.parseDouble(cursor.getString(9)));
-            game.set_image_url(cursor.getString(10));
+            game.set_year(Integer.parseInt(cursor.getString(10)));
+            game.set_image_url(cursor.getString(11));
             cursor.close();
         } else {
             game = null;

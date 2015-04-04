@@ -22,7 +22,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="30sp"
+            android:textSize="@dimen/item_title_text_size"
             xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/adapter_textView_title">
         </TextView>

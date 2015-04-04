@@ -25,17 +25,11 @@ public class CollectionListView extends BaseActivity {
 
     private Intent intent, intent_extras;
 
-    String  GAME_ID = "148228",
-            GAME_NAME = "Splendor",
-            name, bgg_id, game_id, game_to_delete;
+    String  name, bgg_id, game_id, game_to_delete;
 
     String players, time, rating, mechanic;
-    AlertDialog alertDialog;
 
-    String[] gamesArray;
     ListView collectionListView;
-    ArrayList<String> gamesArrayList;
-    ArrayList<Game> gameObjectsArrayList;
     DBHandler dbHandler;
     Cursor cursor;
 
@@ -75,7 +69,7 @@ public class CollectionListView extends BaseActivity {
     }
 
     private void setCollectionListView(String players, String time, String rating, String mechanic) {
-        dbHandler = new DBHandler(this, null, null, 1);
+        dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
         if (players.equals("") && time.equals("") && rating.equals("") && mechanic.equals("")){
             cursor = dbHandler.getAllGames();
         } else {
