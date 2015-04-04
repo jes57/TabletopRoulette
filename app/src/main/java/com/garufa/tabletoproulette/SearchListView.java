@@ -1,6 +1,7 @@
 package com.garufa.tabletoproulette;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -37,6 +38,7 @@ public class SearchListView extends BaseActivity {
     ArrayList<String> gamesArrayList;
     List<Game> gameObjectsArrayList;
     AlertDialog.Builder builder;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +88,11 @@ public class SearchListView extends BaseActivity {
 
     private class DownLoadXmlTask extends AsyncTask<String, Void, List<Game>> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(SearchListView.this, "Wait", "Downloading...");
+        }
+        @Override
         protected List<Game> doInBackground(String... urls) {
             try {
                 Log.i("AsyncTask", "Right before loadXmlFromUrl");
@@ -103,6 +110,7 @@ public class SearchListView extends BaseActivity {
 
         @Override
         protected void onPostExecute(List<Game> games) {
+            progressDialog.dismiss();
             gameObjectsArrayList = games;
             GameArrayAdapter adapter = new GameArrayAdapter(SearchListView.this, gameObjectsArrayList);
 

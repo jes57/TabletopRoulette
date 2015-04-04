@@ -1,5 +1,6 @@
 package com.garufa.tabletoproulette;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -43,6 +44,7 @@ public class SearchDetails extends BaseActivity{
     DBHandler dbHandler;
     Game game_to_add;
     Bitmap image;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +101,12 @@ public class SearchDetails extends BaseActivity{
 
     private class DownLoadXmlTask extends AsyncTask<String, Void, Game> {
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(SearchDetails.this, "Wait", "Downloading...");
+        }
+
+        @Override
         protected Game doInBackground(String... urls) {
             try {
                 Log.i("AsyncTask", "Right before loadXmlFromUrl");
@@ -112,6 +120,7 @@ public class SearchDetails extends BaseActivity{
 
         @Override
         protected void onPostExecute(Game g) {
+            progressDialog.dismiss();
             SearchDetails.this.game_to_add = g;
 
             // Set player text
