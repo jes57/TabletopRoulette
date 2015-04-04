@@ -15,4 +15,6 @@
     <item android:id="@+id/action_random_game" android:title="@string/random_game_string"
         android:orderInCategory="103" app:showAsAction="always"
         android:icon="@drawable/ic_action_die" />
+    <item android:id="@+id/action_download" android:title="Download Collection"
+        android:orderInCategory="104" android:icon="@drawable/ic_action_download" />
 </menu>
