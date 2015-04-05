@@ -156,6 +156,24 @@ public class DBHandler extends SQLiteOpenHelper {
 
     }
 
+    public boolean deleteAll() {
+        boolean result = true;
+
+        String query = "Select * FROM " + TABLE_GAMES;
+
+        Cursor cursor = getAllGames();
+
+        while (!cursor.isAfterLast()){
+            String name = cursor.getString(1);
+            if (!deleteGame(name)){
+                result = false;
+            }
+            cursor.moveToNext();
+        }
+        cursor.close();
+        return result;
+    }
+
     public boolean deleteGame(String game_name){
         boolean result = false;
 

@@ -124,67 +124,6 @@ public class CollectionListView extends BaseActivity {
         });
     }
 
-    // Display the alert dialog to filter
-//    @Override
-//    protected void displayFilterDialog() {
-//        LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
-//        View promptView = layoutInflater.inflate(R.layout.filter_dialog, null);
-//        final EditText playersEditText = (EditText) promptView.findViewById(R.id.filter_players_EditText);
-//        final EditText timeEditText = (EditText) promptView.findViewById(R.id.filter_time_EditText);
-//        final EditText ratingEditText = (EditText) promptView.findViewById(R.id.filter_rating_EditText);
-//        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setView(promptView)
-//                .setTitle("Filter")
-//                .setIcon(R.drawable.ic_action_filter)
-//                .setCancelable(false).setPositiveButton("Filter", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                Intent intent = new Intent(getApplicationContext(), CollectionListView.class);
-//                intent.putExtra(Constants.EXTRAS_PLAYERS, playersEditText.getText().toString());
-//                intent.putExtra(Constants.EXTRAS_TIME, timeEditText.getText().toString());
-//                intent.putExtra(Constants.EXTRAS_RATING, ratingEditText.getText().toString());
-//                intent.putExtra(Constants.EXTRAS_MECHANIC, "");
-//
-//                startActivity(intent);
-//            }
-//        }).setNegativeButton("Clear Filter", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                startActivity(new Intent(getApplicationContext(), CollectionListView.class));
-//            }
-//        }).create().show();
-//    }
-//    // Display the alert dialog to filter
-//    protected void displayRandomDialog() {
-//        LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
-//        View promptView = layoutInflater.inflate(R.layout.filter_dialog, null);
-//        final EditText playersEditText = (EditText) promptView.findViewById(R.id.filter_players_EditText);
-//        final EditText timeEditText = (EditText) promptView.findViewById(R.id.filter_time_EditText);
-//        final EditText ratingEditText = (EditText) promptView.findViewById(R.id.filter_rating_EditText);
-//        AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-//        builder.setView(promptView)
-//                .setTitle("Random")
-//                .setIcon(R.drawable.ic_action_filter)
-//                .setCancelable(false).setPositiveButton("Roll", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                Intent intent = new Intent(getApplicationContext(), QueryRandom.class);
-//                intent.putExtra(Constants.EXTRAS_PLAYERS, playersEditText.getText().toString());
-//                intent.putExtra(Constants.EXTRAS_TIME, timeEditText.getText().toString());
-//                intent.putExtra(Constants.EXTRAS_RATING, ratingEditText.getText().toString());
-//                intent.putExtra(Constants.EXTRAS_MECHANIC, "");
-//
-//                startActivity(intent);
-//            }
-//        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//                dialog.dismiss();
-//            }
-//        }).create().show();
-//    }
-
-
     private boolean onLongListItemClick(View view, int position, long id) {
         if (cursor.moveToPosition(position)) {
             game_to_delete = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));

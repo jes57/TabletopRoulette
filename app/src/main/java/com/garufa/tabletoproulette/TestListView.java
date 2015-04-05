@@ -53,17 +53,55 @@ public class TestListView extends BaseActivity {
     private void initialize() {
         setContentView(R.layout.collection_layout);
         dbHandler = new DBHandler(TestListView.this, null, null, DBHandler.DATABASE_VERSION);
-        
+
 
         Intent intent_extras        = getIntent();
         Bundle bundle = intent_extras.getExtras();
         if (bundle != null) {
             query_url = bundle.getString(Constants.EXTRAS_URL);
+            // Need to replace spaces with the HTML code %20
+            query_url = query_url.replace(" ", "%20");
         } else {
             query_url = Constants.URL_BGG_TEST_ID;
         }
-        loadPage();
+        addOrDelete();
     }
+
+
+    // Confirm the download of a new set of games
+    protected void addOrDelete() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.app_name))
+                .setMessage("Would you like to add to your collection or replace it?")
+                .setCancelable(false)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setCancelable(true)
+                .setPositiveButton("Add to", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                        loadPage();
+                    }
+                })
+                .setNegativeButton("Replace", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        removeGames();
+                        loadPage();
+                    }
+                })
+                .create().show();
+    }
+
+    private void removeGames() {
+        dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
+        if (!dbHandler.deleteAll()) {
+            showToast("Unable to remove 1 or more games");
+        } else {
+            showToast("Delete successful!");
+        }
+    }
+
 
     // Call the DownLoadXmlTask to populate ArrayList
     private void loadPage() {
@@ -96,13 +134,32 @@ public class TestListView extends BaseActivity {
             gameObjectsArrayList = games;
             GameArrayAdapter adapter = new GameArrayAdapter(TestListView.this, gameObjectsArrayList);
 
+            // Set the ListView
+            collectionListView = (ListView) findViewById(R.id.collectionListView);
+            collectionListView.setAdapter(adapter);
+
+            collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // Set the name and id of the game to be displayed
+                    Game game = gameObjectsArrayList.get(position);
+                    name = game.get_name();
+                    game_id = String.valueOf(game.get_bgg_id());
+
+                    intent = new Intent(TestListView.this, SearchDetails.class);
+                    intent.putExtra(Constants.EXTRAS_ID, game_id);
+                    intent.putExtra(Constants.EXTRAS_NAME, name);
+                    startActivity(intent);
+                }
+            });
+
             for ( Game g : games) {
                 query_url = Constants.URL_BGG_ID_SEARCH + g.get_bgg_id() + Constants.URL_STATS;
                 new InsertXmlTask().execute(query_url);
             }
             progressDialog.dismiss();
             showToast("Games downloaded successfully.");
-            startActivity(new Intent(TestListView.this, CollectionListView.class));
+//            startActivity(new Intent(TestListView.this, CollectionListView.class));
         }
     }
 
