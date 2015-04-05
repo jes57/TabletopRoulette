@@ -6,11 +6,14 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * Created by Jason on 4/4/2015.
@@ -58,6 +61,7 @@ public abstract class BaseActivity extends ActionBarActivity{
             }
         }).create().show();
     }
+
     // Display the alert dialog to filter
     protected void displayRandomDialog() {
         LayoutInflater layoutInflater = LayoutInflater.from(this);
@@ -87,6 +91,7 @@ public abstract class BaseActivity extends ActionBarActivity{
                     }
                 }).create().show();
     }
+
     protected void showAlert(String msg) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getResources().getString(R.string.app_name))
@@ -100,6 +105,64 @@ public abstract class BaseActivity extends ActionBarActivity{
                     }
                 }).create().show();
     }
+
+    // Confirm the download of a new set of games
+    protected void confirmAlert(String msg) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(getResources().getString(R.string.app_name))
+                .setMessage(msg)
+                .setCancelable(false)
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setCancelable(true)
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .create().show();
+    }
+
+    // Get the username to collect games
+    protected void getUserName() {
+        LayoutInflater layoutInflater = LayoutInflater.from(this);
+        View promptView = layoutInflater.inflate(R.layout.input_dialog, null);
+        final AlertDialog.Builder bulider = new AlertDialog.Builder(this);
+        final EditText editText = (EditText) promptView.findViewById(R.id.dialogEditText);
+        final TextView textView = (TextView) promptView.findViewById(R.id.dialogTextView);
+        textView.setText("Enter your BoardGameGeek username");
+        editText.setText("TableTopRoulette");
+        bulider.setView(promptView)
+               .setTitle("Download Collection")
+               .setIcon(R.drawable.ic_launcher)
+               .setCancelable(true)
+               .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                   @Override
+                   public void onClick(DialogInterface dialog, int which) {
+                       String user_name = editText.getText().toString();
+                       String url = Constants.URL_BGG_COLLECTION + user_name + Constants.URL_OWN;
+                       startActivity(new Intent(getApplicationContext(), TestListView.class)
+                               .putExtra(Constants.EXTRAS_URL, url));
+                   }
+               })
+               .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+               }).create().show();
+    }
+
+    protected void showToast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -116,6 +179,9 @@ public abstract class BaseActivity extends ActionBarActivity{
                 displayFilterDialog(); break;
             case R.id.action_random_game:
                 displayRandomDialog(); break;
+            case R.id.action_download:
+                getUserName();
+                break;
         }
 
         return super.onOptionsItemSelected(item);

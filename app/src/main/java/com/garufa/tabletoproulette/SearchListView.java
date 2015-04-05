@@ -56,12 +56,12 @@ public class SearchListView extends BaseActivity {
     private void displaySearchDialog() {
         LayoutInflater layoutInflater = LayoutInflater.from(SearchListView.this);
         View promptView = layoutInflater.inflate(R.layout.input_dialog, null);
-        builder = new AlertDialog.Builder(SearchListView.this);
-        builder.setView(promptView);
-        builder.setTitle("Search");
-        builder.setIcon(R.drawable.ic_launcher);
         final EditText editText = (EditText) promptView.findViewById(R.id.dialogEditText);
-        builder.setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+        builder = new AlertDialog.Builder(SearchListView.this);
+        builder.setView(promptView)
+               .setTitle("Search")
+               .setIcon(R.drawable.ic_launcher)
+               .setCancelable(false).setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 name = editText.getText().toString();
@@ -70,15 +70,13 @@ public class SearchListView extends BaseActivity {
                 query_url = query_url.replace(" ", "%20");
                 loadPage();
             }
-        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finish();
-            }
-        });
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    finish();
+                }
+            }).create().show();
     }
 
     // Call the DownLoadXmlTask to populate ArrayList

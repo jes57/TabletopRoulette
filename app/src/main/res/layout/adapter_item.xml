@@ -75,6 +75,7 @@
                 android:id="@+id/adapter_ratingBar"
                 android:numStars="10"
                 android:rating="5"
+                android:visibility="gone"
                 style="?android:attr/ratingBarStyleSmall"
                 android:stepSize=".1" />
         </LinearLayout>

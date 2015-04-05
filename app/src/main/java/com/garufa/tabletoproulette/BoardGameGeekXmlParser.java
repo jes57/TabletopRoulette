@@ -31,6 +31,65 @@ public class BoardGameGeekXmlParser {
         }
     }
 
+//    public List<Game> parse_user_collection(InputStream in) throws XmlPullParserException, IOException {
+//        List<Game> games = read_user_collection(in);
+//
+//        String query_url
+//
+//        return games;
+//    }
+
+    public List<Game> parse_user_collection(InputStream in) throws XmlPullParserException, IOException {
+        try {
+            XmlPullParser parser = Xml.newPullParser();
+            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+            parser.setInput(in, null);
+            parser.nextTag();
+            return  readCollection(parser);
+        } finally {
+            in.close();
+        }
+    }
+
+    private List<Game> readCollection(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List<Game> games = new ArrayList<Game>();
+        parser.require(XmlPullParser.START_TAG, ns, "items");
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String name = parser.getName();
+            // Starts by looking for the entry tag
+            if (name.equals("item")) {
+                games.add(readCollectionEntry(parser));
+            } else {
+                skip(parser);
+            }
+        }
+        return games;
+    }
+
+    private Game readCollectionEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "item");
+        int bgg_id = 0, year = 0;
+        String name = "";
+
+        bgg_id = Integer.parseInt(parser.getAttributeValue(ns, "objectid"));
+
+        while (parser.next() != XmlPullParser.END_TAG) {
+            if (parser.getEventType() != XmlPullParser.START_TAG) {
+                continue;
+            }
+            String tag_name = parser.getName();
+            switch (tag_name){
+                case "name": name = readName(parser); break;
+                case "yearpublished": year = readYear(parser); break;
+                default: skip(parser);
+            }
+        }
+        return new Game(name, bgg_id, year);
+    }
+
     private List<Game> readSearchFeed(XmlPullParser parser) throws XmlPullParserException, IOException {
         List<Game> games = new ArrayList<Game>();
 

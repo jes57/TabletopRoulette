@@ -14,13 +14,18 @@ public final class Constants {
             EXTRAS_PLAYERS  = "players",
             EXTRAS_TIME     = "time",
             EXTRAS_MECHANIC = "mechanic",
-            EXTRAS_RATING  = "rating";
+            EXTRAS_RATING  = "rating",
+            EXTRAS_URL      = "url";
 
     // BoardGameGeek Searching constants
     public static final String
             URL_BGG_ID_SEARCH = "http://www.boardgamegeek.com/xmlapi/boardgame/",
             URL_BGG_NAME_SEARCH = "http://www.boardgamegeek.com/xmlapi/search?search=",
-            URL_STATS = "?stats=1";
+            URL_STATS = "?stats=1",
+            URL_BGG_COLLECTION = "http://www.boardgamegeek.com/xmlapi/collection/",
+            URL_OWN = "?own=1",
+            URL_BGG_TEST_ID = URL_BGG_COLLECTION + "TableTopRoulette" + URL_OWN;
+
 
     // Database specific constants
     public static final String
