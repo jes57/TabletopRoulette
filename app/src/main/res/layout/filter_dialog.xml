@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/play_time"/>
+            android:text="@string/rating"/>
 
         <EditText
             android:id="@+id/filter_rating_EditText"
