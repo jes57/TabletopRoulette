@@ -1,6 +1,7 @@
 package com.garufa.tabletoproulette;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +20,7 @@ import android.widget.Toast;
  * Created by Jason on 4/4/2015.
  */
 public abstract class BaseActivity extends ActionBarActivity{
+    private ProgressDialog mProgressDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +33,21 @@ public abstract class BaseActivity extends ActionBarActivity{
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
+    protected void showProgress(String msg) {
+        if (mProgressDialog != null && mProgressDialog.isShowing())
+            dismissProgress();
+
+        mProgressDialog = ProgressDialog.show(this, getResources().getString(R.string.app_name), msg);
+    }
+
+    protected void dismissProgress() {
+        if (mProgressDialog != null) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
+    }
+
 
     // Display the alert dialog to filter
     protected void displayFilterDialog() {

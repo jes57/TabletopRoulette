@@ -1,5 +1,7 @@
 package com.garufa.tabletoproulette;
 
+import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -19,6 +21,8 @@ public AsyncResponse delegate=null;
     private String _url;
     private ImageView _imageView;
     private Bitmap _image;
+    private ProgressDialog progressDialog;
+    private Context context = null;
 
     public ImageLoadTask(String url, AsyncResponse delegate) {
         this._url = url;

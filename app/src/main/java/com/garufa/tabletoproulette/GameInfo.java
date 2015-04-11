@@ -62,8 +62,6 @@ public class GameInfo extends BaseActivity {
         intent_extras        = getIntent();
         Bundle bundle = intent_extras.getExtras();
         if (bundle != null){
-            int game_id = Integer.parseInt(bundle.getString(Constants.EXTRAS_ID));
-            int bgg_id = Integer.parseInt(bundle.getString(Constants.EXTRAS_BGG_ID));
             String game_name = bundle.getString(Constants.EXTRAS_NAME);
 
             // Find the game in the database
