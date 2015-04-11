@@ -1,5 +1,6 @@
 package com.garufa.tabletoproulette;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -8,14 +9,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.EditText;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -43,7 +43,11 @@ public class TestListView extends BaseActivity {
     Bitmap image;
     DBHandler dbHandler;
 
-    @Override
+    // Dynamic Layout
+    Button button_addGames;
+    LinearLayout layout;
+    LinearLayout.LayoutParams layoutParams;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -52,6 +56,27 @@ public class TestListView extends BaseActivity {
 
     private void initialize() {
         setContentView(R.layout.collection_layout);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.collection_linear_layout);
+
+        layoutParams = new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT );
+
+        // Create a button
+        button_addGames = new Button(getApplicationContext());
+        button_addGames.setLayoutParams(layoutParams);
+        button_addGames.setText("Add all to collection");
+        button_addGames.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showToast("Adding games");
+                for ( Game g : gameObjectsArrayList) {
+                query_url = Constants.URL_BGG_ID_SEARCH + g.get_bgg_id() + Constants.URL_STATS;
+                new InsertXmlTask().execute(query_url);
+                }
+            }
+        });
+        linearLayout.addView(button_addGames);
         dbHandler = new DBHandler(TestListView.this, null, null, DBHandler.DATABASE_VERSION);
 
 
@@ -64,6 +89,8 @@ public class TestListView extends BaseActivity {
         } else {
             query_url = Constants.URL_BGG_TEST_ID;
         }
+
+
         addOrDelete();
     }
 
@@ -153,10 +180,10 @@ public class TestListView extends BaseActivity {
                 }
             });
 
-            for ( Game g : games) {
-                query_url = Constants.URL_BGG_ID_SEARCH + g.get_bgg_id() + Constants.URL_STATS;
-                new InsertXmlTask().execute(query_url);
-            }
+//            for ( Game g : games) {
+//                query_url = Constants.URL_BGG_ID_SEARCH + g.get_bgg_id() + Constants.URL_STATS;
+//                new InsertXmlTask().execute(query_url);
+//            }
             progressDialog.dismiss();
             showToast("Games downloaded successfully.");
 //            startActivity(new Intent(TestListView.this, CollectionListView.class));
@@ -164,6 +191,11 @@ public class TestListView extends BaseActivity {
     }
 
     private class InsertXmlTask extends AsyncTask<String, Void, Game> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = ProgressDialog.show(TestListView.this, "Wait", "Inserting...");
+        }
         @Override
         protected Game doInBackground(String... urls) {
             try {
@@ -178,10 +210,11 @@ public class TestListView extends BaseActivity {
         @Override
         protected void onPostExecute(Game g) {
             if (dbHandler.addGame(g)){
-                if (image != null){
-                    saveImageInternal(image);
-                }
+//                if (image != null){
+//                    saveImageInternal(image);
+//                }
             }
+            progressDialog.dismiss();
     }
 
 }
