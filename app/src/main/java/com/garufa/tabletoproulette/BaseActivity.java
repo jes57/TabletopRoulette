@@ -70,13 +70,21 @@ public abstract class BaseActivity extends ActionBarActivity{
                 intent.putExtra(Constants.EXTRAS_MECHANIC, "");
 
                 startActivity(intent);
+                checkContext();
             }
         }).setNegativeButton("Clear Filter", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 startActivity(new Intent(getApplicationContext(), CollectionListView.class));
+                checkContext();
             }
         }).create().show();
+    }
+
+    private void checkContext() {
+        if (this instanceof CollectionListView){
+            finish();
+        }
     }
 
     // Display the alert dialog to filter
