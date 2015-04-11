@@ -11,7 +11,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/item_title_text_size"
             xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/textView_item_name"
+            android:id="@+id/simpleAdapterItem_name"
             android:paddingLeft="5dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp">
@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="18sp"
-            android:id="@+id/item_year_TextView"
+            android:id="@+id/simpleAdapterItem_year"
             android:paddingLeft="5dp"
             android:paddingTop="2dp"
             android:paddingBottom="2dp" />

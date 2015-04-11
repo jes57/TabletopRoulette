@@ -10,8 +10,13 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -159,11 +164,53 @@ public class TestListView extends BaseActivity {
         @Override
         protected void onPostExecute(List<Game> games) {
             gameObjectsArrayList = games;
-            GameArrayAdapter adapter = new GameArrayAdapter(TestListView.this, gameObjectsArrayList);
+            final GameArrayAdapter adapter = new GameArrayAdapter(TestListView.this,
+                    R.layout.adapter_item_simple, gameObjectsArrayList);
 
             // Set the ListView
             collectionListView = (ListView) findViewById(R.id.collectionListView);
             collectionListView.setAdapter(adapter);
+            collectionListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+            collectionListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+                @Override
+                public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+                    final int checkedCount = collectionListView.getCheckedItemCount();
+                    mode.setTitle(checkedCount + " selected");
+                    adapter.toggleSelection(position);
+                }
+
+                @Override
+                public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                    mode.getMenuInflater().inflate(R.menu.contextual_action_bar, menu);
+                    return true;
+                }
+
+                @Override
+                public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                    return false;
+                }
+
+                @Override
+                public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                    switch (item.getItemId()) {
+                        case R.id.add:
+                            SparseBooleanArray selected = adapter.getmSelectedItemsIds();
+                            for (int i = (selected.size() - 1); i >= 0; i--){
+                                Game selectedGame = adapter.getItem(selected.keyAt(i));
+                                adapter.add(selectedGame);
+                                adapter.remove(selectedGame);
+                            }
+                            mode.finish();
+                            return true;
+                        default: return false;
+                    }
+                }
+
+                @Override
+                public void onDestroyActionMode(ActionMode mode) {
+                    adapter.removeSelection();
+                }
+            });
 
             collectionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -194,7 +241,7 @@ public class TestListView extends BaseActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            progressDialog = ProgressDialog.show(TestListView.this, "Wait", "Inserting...");
+            showProgress("Inserting...");
         }
         @Override
         protected Game doInBackground(String... urls) {
@@ -214,7 +261,7 @@ public class TestListView extends BaseActivity {
 //                    saveImageInternal(image);
 //                }
             }
-            progressDialog.dismiss();
+            dismissProgress();
     }
 
 }

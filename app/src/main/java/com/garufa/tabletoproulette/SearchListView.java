@@ -110,7 +110,8 @@ public class SearchListView extends BaseActivity {
         protected void onPostExecute(List<Game> games) {
             progressDialog.dismiss();
             gameObjectsArrayList = games;
-            GameArrayAdapter adapter = new GameArrayAdapter(SearchListView.this, gameObjectsArrayList);
+            final GameArrayAdapter adapter = new GameArrayAdapter(SearchListView.this,
+                    R.layout.adapter_item_simple, gameObjectsArrayList);
 
             // Set the ListView
             collectionListView = (ListView) findViewById(R.id.collectionListView);
