@@ -76,7 +76,7 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
         return view;
     }
 
-    public void add(Game object) {
+    public void addFromXml(Game object) {
         String query_url = Constants.URL_BGG_ID_SEARCH + object.get_bgg_id() + Constants.URL_STATS;
         new DownLoadXmlTask().execute(query_url);
     }
@@ -98,12 +98,12 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
             final Game game_to_add = g;
             dbHandler.addGame(game_to_add);
             // Set page content
-//            new ImageLoadTask(g.get_image_url(), new AsyncResponse() {
-//                @Override
-//                public void processFinish(Bitmap output) {
-//                    saveImageInternal(output, String.valueOf(game_to_add.get_bgg_id()));
-//                }
-//            }).execute();
+            new ImageLoadTask(g.get_image_url(), new AsyncResponse() {
+                @Override
+                public void processFinish(Bitmap output) {
+                    saveImageInternal(output, String.valueOf(game_to_add.get_bgg_id()));
+                }
+            }).execute();
         }
     }
 

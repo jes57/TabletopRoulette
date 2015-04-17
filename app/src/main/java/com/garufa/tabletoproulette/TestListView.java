@@ -182,7 +182,7 @@ public class TestListView extends BaseActivity {
                             List<Game> gameList = new ArrayList<Game>();
                             for (int i = (selected.size() - 1); i >= 0; i--){
                                 Game selectedGame = adapter.getItem(selected.keyAt(i));
-                                adapter.add(selectedGame);
+                                adapter.addFromXml(selectedGame);
                                 adapter.remove(selectedGame);
 //                                String query_url = Constants.URL_BGG_ID_SEARCH
 //                                        + selectedGame.get_bgg_id()
