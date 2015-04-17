@@ -39,6 +39,7 @@
     <string name="details_string">Details</string>
     <string name="published_string">Published:</string>
     <string name="confirm_download_string">Are you sure? This action will replace your library with a new one.</string>
+    <string name="select_all_string">Select All</string>
     <string-array name="context_menu">
         <item>View</item>
         <item>Delete</item>

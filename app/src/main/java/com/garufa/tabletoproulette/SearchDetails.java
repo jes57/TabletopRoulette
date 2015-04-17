@@ -41,7 +41,8 @@ public class SearchDetails extends BaseActivity{
     ImageView imageView;
     Button button_add;
     RatingBar ratingBar;
-    DBHandler dbHandler;
+//    DBHandler dbHandler;
+    DatabaseHelper dbHandler;
     Game game_to_add;
     Bitmap image;
     ProgressDialog progressDialog;
@@ -59,7 +60,8 @@ public class SearchDetails extends BaseActivity{
         if (bundle != null) {
             game_id = bundle.getString(Constants.EXTRAS_BGG_ID);
             query_url = Constants.URL_BGG_ID_SEARCH + game_id + Constants.URL_STATS;
-            dbHandler = new DBHandler(SearchDetails.this, null, null, DBHandler.DATABASE_VERSION);
+            dbHandler = DatabaseHelper.getInstance(this);
+//            dbHandler = new DBHandler(SearchDetails.this, null, null, DBHandler.DATABASE_VERSION);
 
             setContentView(R.layout.game_info_layout);
             textView_description = (TextView) findViewById(R.id.info_textView_description);

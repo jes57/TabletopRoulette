@@ -38,6 +38,7 @@ import java.util.List;
 public class TestListView extends BaseActivity {
 
     private Intent intent;
+    private static String TAG = "Bulk Add Games...";
 
     String name, game_id, query_url;
     ListView collectionListView;
@@ -46,7 +47,8 @@ public class TestListView extends BaseActivity {
     AlertDialog.Builder builder;
     ProgressDialog progressDialog;
     Bitmap image;
-    DBHandler dbHandler;
+//    DBHandler dbHandler;
+    DatabaseHelper dbHandler;
 
     // Dynamic Layout
     Button button_addGames;
@@ -61,28 +63,9 @@ public class TestListView extends BaseActivity {
 
     private void initialize() {
         setContentView(R.layout.collection_layout);
-        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.collection_linear_layout);
 
-        layoutParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT );
-
-        // Create a button
-        button_addGames = new Button(getApplicationContext());
-        button_addGames.setLayoutParams(layoutParams);
-        button_addGames.setText("Add all to collection");
-        button_addGames.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showToast("Adding games");
-                for ( Game g : gameObjectsArrayList) {
-                query_url = Constants.URL_BGG_ID_SEARCH + g.get_bgg_id() + Constants.URL_STATS;
-                new InsertXmlTask().execute(query_url);
-                }
-            }
-        });
-        linearLayout.addView(button_addGames);
-        dbHandler = new DBHandler(TestListView.this, null, null, DBHandler.DATABASE_VERSION);
+        DatabaseHelper dbHandler = DatabaseHelper.getInstance(this);
+//        dbHandler = new DBHandler(TestListView.this, null, null, DBHandler.DATABASE_VERSION);
 
 
         Intent intent_extras        = getIntent();
@@ -126,7 +109,8 @@ public class TestListView extends BaseActivity {
     }
 
     private void removeGames() {
-        dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
+        dbHandler = DatabaseHelper.getInstance(this);
+//        dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
         if (!dbHandler.deleteAll()) {
             showToast("Unable to remove 1 or more games");
         } else {
@@ -163,7 +147,7 @@ public class TestListView extends BaseActivity {
 
         @Override
         protected void onPostExecute(List<Game> games) {
-            gameObjectsArrayList = games;
+            gameObjectsArrayList = checkForDuplicates(games);
             final GameArrayAdapter adapter = new GameArrayAdapter(TestListView.this,
                     R.layout.adapter_item_simple, gameObjectsArrayList);
 
@@ -174,9 +158,9 @@ public class TestListView extends BaseActivity {
             collectionListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
                 @Override
                 public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
-                    final int checkedCount = collectionListView.getCheckedItemCount();
-                    mode.setTitle(checkedCount + " selected");
                     adapter.toggleSelection(position);
+                    final int checkedCount = adapter.getSelectedCount();
+                    mode.setTitle(checkedCount + " selected");
                 }
 
                 @Override
@@ -195,13 +179,33 @@ public class TestListView extends BaseActivity {
                     switch (item.getItemId()) {
                         case R.id.add:
                             SparseBooleanArray selected = adapter.getmSelectedItemsIds();
+                            List<Game> gameList = new ArrayList<Game>();
                             for (int i = (selected.size() - 1); i >= 0; i--){
                                 Game selectedGame = adapter.getItem(selected.keyAt(i));
-                                adapter.add(selectedGame);
-                                adapter.remove(selectedGame);
+//                                adapter.add(selectedGame);
+                                String query_url = Constants.URL_BGG_ID_SEARCH
+                                        + selectedGame.get_bgg_id()
+                                        + Constants.URL_STATS;
+                                try {
+                                    Game g = insertXmlFromUrl(query_url);
+                                    gameList.add(g);
+                                    adapter.remove(selectedGame);
+                                } catch (IOException e) {
+                                    Log.e(TAG, "Unable to load data: IOException.");
+                                } catch (XmlPullParserException e) {
+                                    Log.e(TAG, "Unable to load data: XmlPullParserException");
+                                }
+                                dbHandler = DatabaseHelper.getInstance(TestListView.this);
+                                dbHandler.addGameBulk(gameList);
+
                             }
                             mode.finish();
                             return true;
+                        case R.id.select_all:
+                            adapter.selectAll();
+                            final int checkedCount = adapter.getSelectedCount();
+                            mode.setTitle(checkedCount + " selected");
+                            return false;
                         default: return false;
                     }
                 }
@@ -226,15 +230,19 @@ public class TestListView extends BaseActivity {
                     startActivity(intent);
                 }
             });
-
-//            for ( Game g : games) {
-//                query_url = Constants.URL_BGG_ID_SEARCH + g.get_bgg_id() + Constants.URL_STATS;
-//                new InsertXmlTask().execute(query_url);
-//            }
             progressDialog.dismiss();
-            showToast("Games downloaded successfully.");
-//            startActivity(new Intent(TestListView.this, CollectionListView.class));
         }
+    }
+
+    private List<Game> checkForDuplicates(List<Game> games) {
+        dbHandler = DatabaseHelper.getInstance(this);
+        for (Game g : new ArrayList<Game>(games)){
+            if (dbHandler.gameExists(Constants.COLUMN_GAME_NAME,
+                    g.get_name())){
+                games.remove(g);
+            }
+        }
+        return games;
     }
 
     private class InsertXmlTask extends AsyncTask<String, Void, Game> {
@@ -256,18 +264,21 @@ public class TestListView extends BaseActivity {
 
         @Override
         protected void onPostExecute(Game g) {
-            if (dbHandler.addGame(g)){
-//                if (image != null){
-//                    saveImageInternal(image);
-//                }
-            }
-            dismissProgress();
+            final Game game = g;
+            dbHandler.addGame(game);
+            new ImageLoadTask(String.valueOf(game.get_bgg_id()), new AsyncResponse() {
+                @Override
+                public void processFinish(Bitmap output) {
+                    saveImageInternal(output, String.valueOf(game.get_bgg_id()));
+                    dismissProgress();
+                }
+            });
     }
 
 }
 
-    private boolean saveImageInternal(Bitmap image) {
-        String file_name = String.valueOf(game_to_add.get_bgg_id()) + Constants.FILE_TYPE;
+    private boolean saveImageInternal(Bitmap image, String bgg_id) {
+        String file_name = bgg_id + Constants.FILE_TYPE;
         try {
             // Compress the image to write to OutputStream
             FileOutputStream outputStream = openFileOutput(file_name, Context.MODE_PRIVATE);
@@ -278,7 +289,6 @@ public class TestListView extends BaseActivity {
 
             return true;
         } catch (Exception e) {
-            Log.e("saveImageInteral()", e.getMessage());
             return false;
         }
     }
@@ -301,7 +311,6 @@ public class TestListView extends BaseActivity {
     }
 
     private List<Game> loadXmlFromUrl(String url_string) throws XmlPullParserException, IOException {
-        Log.i("loadXmlFromUrl...", "Start of loadXmlFromUrl");
         InputStream stream = null;
         BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
         List<Game> games = null;

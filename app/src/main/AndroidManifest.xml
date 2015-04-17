@@ -59,7 +59,7 @@
             android:name=".TestListView"
             android:parentActivityName=".CollectionListView"
             android:icon="@drawable/ic_launcher"
-            android:label="@string/collection_string"
+            android:label="@string/search_string"
             android:theme="@style/AppTheme"
             android:screenOrientation="portrait">
         </activity>

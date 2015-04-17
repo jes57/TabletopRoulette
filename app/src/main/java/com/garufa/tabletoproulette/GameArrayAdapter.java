@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -30,6 +31,7 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
     LayoutInflater inflater;
     List<Game> gameList;
     private SparseBooleanArray mSelectedItemsIds;
+    DatabaseHelper dbHandler = DatabaseHelper.getInstance(getContext());
 
     public GameArrayAdapter(Context context, List<Game> games) {
         super(context, 0, games);
@@ -78,11 +80,11 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
         String query_url = Constants.URL_BGG_ID_SEARCH + object.get_bgg_id() + Constants.URL_STATS;
         new DownLoadXmlTask().execute(query_url);
     }
+
     private class DownLoadXmlTask extends AsyncTask<String, Void, Game> {
         @Override
         protected Game doInBackground(String... urls) {
             try {
-                Log.i("AsyncTask", "Right before loadXmlFromUrl");
                 return loadXmlFromUrl(urls[0]);
             } catch (IOException e) {
                 return new Game("N/A", "Unable to load data: IOException");
@@ -93,20 +95,38 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
 
         @Override
         protected void onPostExecute(Game g) {
-            DBHandler dbHandler = new DBHandler(getContext(), null, null, DBHandler.DATABASE_VERSION);
-            dbHandler.addGame(g);
+            final Game game_to_add = g;
+            dbHandler.addGame(game_to_add);
             // Set page content
-//            new ImageLoadTask(game_to_add.get_image_url(), new AsyncResponse() {
+//            new ImageLoadTask(g.get_image_url(), new AsyncResponse() {
 //                @Override
 //                public void processFinish(Bitmap output) {
-//                    image = output;
-//                    imageView.setImageBitmap(image);
+//                    saveImageInternal(output, String.valueOf(game_to_add.get_bgg_id()));
 //                }
 //            }).execute();
         }
     }
+
+    private boolean saveImageInternal(Bitmap image, String bgg_id) {
+        String file_name = bgg_id + Constants.FILE_TYPE;
+        try {
+            // Compress the image to write to OutputStream
+            FileOutputStream outputStream = context.openFileOutput(file_name, Context.MODE_PRIVATE);
+
+            // Write the bitmap to the output stream
+            image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.close();
+
+            return true;
+        } catch (Exception e) {
+            Log.e("saveImageInteral()", e.getMessage());
+            return false;
+        }
+    }
+
+
+
     private Game loadXmlFromUrl(String url_string) throws XmlPullParserException, IOException {
-        Log.i("loadXmlFromUrl...", "Start of loadXmlFromUrl");
         InputStream stream = null;
         BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
         List<Game> games = null;
@@ -121,6 +141,7 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
         }
         return games.get(0);
     }
+
     // Given a string representation of a URL, sets up a connection and gets
     // an input stream.
     private InputStream downloadUrl(String url_string) throws IOException {
@@ -163,13 +184,19 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
         notifyDataSetChanged();
     }
 
+    public void selectAll(){
+        mSelectedItemsIds = new SparseBooleanArray();
+        for (int i = (gameList.size() - 1); i >= 0; i--){
+            mSelectedItemsIds.put(i, true);
+        }
+        notifyDataSetChanged();
+    }
+
     public int getSelectedCount() {
         return mSelectedItemsIds.size();
     }
 
-    public SparseBooleanArray getmSelectedItemsIds() {
-        return mSelectedItemsIds;
-    }
+    public SparseBooleanArray getmSelectedItemsIds() { return mSelectedItemsIds; }
 
 //    @Override
 //    public View getView(int position, View convertView, ViewGroup parent) {

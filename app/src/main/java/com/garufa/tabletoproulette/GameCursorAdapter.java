@@ -88,7 +88,6 @@ public class GameCursorAdapter extends CursorAdapter {
             FileInputStream inputStream = new FileInputStream(file_path);
             return BitmapFactory.decodeStream(inputStream);
         } catch (Exception e) {
-            e.printStackTrace();
             return BitmapFactory.decodeResource(context.getResources(), R.drawable.tabletoproulet);
         }
     }
