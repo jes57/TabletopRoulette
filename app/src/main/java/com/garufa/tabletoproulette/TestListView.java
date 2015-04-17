@@ -182,21 +182,22 @@ public class TestListView extends BaseActivity {
                             List<Game> gameList = new ArrayList<Game>();
                             for (int i = (selected.size() - 1); i >= 0; i--){
                                 Game selectedGame = adapter.getItem(selected.keyAt(i));
-//                                adapter.add(selectedGame);
-                                String query_url = Constants.URL_BGG_ID_SEARCH
-                                        + selectedGame.get_bgg_id()
-                                        + Constants.URL_STATS;
-                                try {
-                                    Game g = insertXmlFromUrl(query_url);
-                                    gameList.add(g);
-                                    adapter.remove(selectedGame);
-                                } catch (IOException e) {
-                                    Log.e(TAG, "Unable to load data: IOException.");
-                                } catch (XmlPullParserException e) {
-                                    Log.e(TAG, "Unable to load data: XmlPullParserException");
-                                }
-                                dbHandler = DatabaseHelper.getInstance(TestListView.this);
-                                dbHandler.addGameBulk(gameList);
+                                adapter.add(selectedGame);
+                                adapter.remove(selectedGame);
+//                                String query_url = Constants.URL_BGG_ID_SEARCH
+//                                        + selectedGame.get_bgg_id()
+//                                        + Constants.URL_STATS;
+//                                try {
+//                                    Game g = insertXmlFromUrl(query_url);
+//                                    gameList.add(g);
+//                                    adapter.remove(selectedGame);
+//                                } catch (IOException e) {
+//                                    Log.e(TAG, "Unable to load data: IOException.");
+//                                } catch (XmlPullParserException e) {
+//                                    Log.e(TAG, "Unable to load data: XmlPullParserException");
+//                                }
+//                                dbHandler = DatabaseHelper.getInstance(TestListView.this);
+//                                dbHandler.addGameBulk(gameList);
 
                             }
                             mode.finish();
