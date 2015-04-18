@@ -335,7 +335,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                             COLUMN_RATING + " >=?",
                     selectionArgs, null, null, COLUMN_RATING + " ASC");
         }
-        closeDB();
+
         return cursor;
     }
 

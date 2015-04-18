@@ -32,7 +32,7 @@ public class GameInfo extends BaseActivity {
     Button button_add;
     RatingBar ratingBar;
     Bitmap image;
-    DBHandler dbHandler;
+    DatabaseHelper dbHandler;
     Game game;
 
     @Override
@@ -65,7 +65,7 @@ public class GameInfo extends BaseActivity {
             String game_name = bundle.getString(Constants.EXTRAS_NAME);
 
             // Find the game in the database
-            dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
+            dbHandler = DatabaseHelper.getInstance(this);
             game = dbHandler.findGame(game_name);
 
             // Set players and time strings

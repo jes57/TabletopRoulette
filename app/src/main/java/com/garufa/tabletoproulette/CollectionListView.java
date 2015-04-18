@@ -36,7 +36,7 @@ public class CollectionListView extends BaseActivity {
     String players, time, rating, mechanic;
 
     ListView collectionListView;
-    DBHandler dbHandler;
+    DatabaseHelper dbHandler;
     Cursor cursor;
 
     @Override
@@ -75,7 +75,7 @@ public class CollectionListView extends BaseActivity {
     }
 
     private void setCollectionListView(String players, String time, String rating, String mechanic) {
-        dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
+        dbHandler = DatabaseHelper.getInstance(this);
         if (players.equals("") && time.equals("") && rating.equals("") && mechanic.equals("")){
             cursor = dbHandler.getAllGames();
         } else {

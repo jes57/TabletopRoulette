@@ -29,7 +29,7 @@ public class QueryRandom extends BaseActivity {
     Button button_add;
     RatingBar ratingBar;
     Bitmap image;
-    DBHandler dbHandler;
+    DatabaseHelper dbHandler;
     Game game;
     String players, time, rating, mechanic;
     @Override
@@ -60,7 +60,7 @@ public class QueryRandom extends BaseActivity {
         });
 
         // Retrieve the extras to determine game
-        dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
+        dbHandler = DatabaseHelper.getInstance(this);
         set_parameters();
         set_screen();
     }
