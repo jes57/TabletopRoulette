@@ -3,9 +3,11 @@ package com.garufa.tabletoproulette;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,11 @@ import java.util.Random;
  * Created by Jason on 4/13/2015.
  */
 public class DatabaseHelper extends SQLiteOpenHelper {
+
+    private Context mContext;
+    private static DatabaseHelper mInstance = null;
+    private SQLiteDatabase mDb;
+    private static String TAG = "DatabaseHelper";
 
     public static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "collectionDB.db";
@@ -50,8 +57,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             + COLUMN_YEAR + " INTEGER,"
             + COLUMN_IMAGE_URL + " TEXT" + ")";
 
-    private static DatabaseHelper mInstance = null;
-    private SQLiteDatabase db;
 
     public static DatabaseHelper getInstance(Context context){
         // Use the application context, which will ensure that you don't accidentally
@@ -65,28 +70,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private DatabaseHelper(Context context){
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        // I'm not sure but this will probably give me issues because the context
+        // might not be current
+        mContext = context;
     }
 
     public DatabaseHelper(Context context, String name,
                           SQLiteDatabase.CursorFactory factory, int version) {
         super(context, DATABASE_NAME, factory, DATABASE_VERSION);
+        mContext = context;
     }
 
     @Override
     public void onCreate(SQLiteDatabase database) {
-        database.execSQL(CREATE_GAMES_TABLE);
+        try {
+            database.execSQL(CREATE_GAMES_TABLE);
+        } catch (SQLiteException e) {
+            Log.e(TAG, "Error occurred: " + e);
+        }
     }
 
     public void closeDB(){
-        if(db != null) {
-            db.close();
+        if(mDb != null) {
+            mDb.close();
         }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase database, int oldVersion, int newVersion) {
-        database.execSQL("DROP TABLE IF EXISTS " + TABLE_GAMES);
-        onCreate(database);
+        try {
+            database.execSQL("DROP TABLE IF EXISTS " + TABLE_GAMES);
+            onCreate(database);
+        } catch (SQLiteException exception) {
+            Log.e(TAG, "Error occurred: " + exception);
+        }
     }
 
 //    public DatabaseHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version, DatabaseErrorHandler errorHandler) {
@@ -107,8 +124,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_YEAR, game.get_year());
         values.put(COLUMN_IMAGE_URL, game.get_image_url());
 
-        db = this.getWritableDatabase();
-        long success = db.insert(TABLE_GAMES, null, values);
+        mDb = this.getWritableDatabase();
+        long success = mDb.insert(TABLE_GAMES, null, values);
         if (success > 0){
             closeDB();
             return true;
@@ -118,42 +135,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void addGameBulk(List<Game> games) {
-        try {
-            db = this.getWritableDatabase();
-            db.beginTransaction();
-            for (Game g : new ArrayList<Game>(games)) {
-                ContentValues values = new ContentValues();
-                values.put(COLUMN_GAME_NAME, g.get_name());
-                values.put(COLUMN_BGG_ID, g.get_bgg_id());
-                values.put(COLUMN_DESCRIPTION, g.get_description());
-                values.put(COLUMN_MIN_PLAYERS, g.get_min_players());
-                values.put(COLUMN_MAX_PLAYERS, g.get_max_players());
-                values.put(COLUMN_MIN_PLAY_TIME, g.get_min_play_time());
-                values.put(COLUMN_MAX_PLAY_TIME, g.get_max_play_time());
-                values.put(COLUMN_GAME_MECHANIC, g.get_game_mechanic());
-                values.put(COLUMN_RATING, g.get_rating());
-                values.put(COLUMN_YEAR, g.get_year());
-                values.put(COLUMN_IMAGE_URL, g.get_image_url());
+    public void addGameBulk(List<Game> games, boolean clearPrevious) {
+        if (clearPrevious) deleteAll();
 
-                db.insert(TABLE_GAMES, null, values);
-            }
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
+        mDb = this.getWritableDatabase();
+        String query = "INSERT INTO " + TABLE_GAMES + " VALUES (?,?,?,?,?,?,?,?,?,?,?,?);";
+        SQLiteStatement statement = mDb.compileStatement(query);
+        mDb.beginTransaction();
+        for (Game g : new ArrayList<Game>(games)) {
+            Game currentGame = g;
+            statement.clearBindings();
+            // For each column index, bind the data to that index
+            statement.bindString(2, currentGame.get_name());
+            statement.bindLong(3, currentGame.get_bgg_id());
+            statement.bindLong(4, currentGame.get_min_players());
+            statement.bindLong(5, currentGame.get_max_players());
+            statement.bindLong(6, currentGame.get_min_play_time());
+            statement.bindLong(7, currentGame.get_max_play_time());
+            statement.bindString(8, currentGame.get_description());
+            statement.bindString(9, currentGame.get_game_mechanic());
+            statement.bindDouble(10, currentGame.get_rating());
+            statement.bindLong(11, currentGame.get_year());
+            statement.bindString(12, currentGame.get_image_url());
 
-        } finally {
-            db.endTransaction();
+            statement.execute();
         }
-
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
     }
 
     public Game findGame(String game_name){
         String query = "Select * FROM " + TABLE_GAMES + " WHERE " + COLUMN_GAME_NAME
                 + " =  \"" + game_name + "\"";
 
-        db = this.getWritableDatabase();
+        mDb = this.getWritableDatabase();
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = mDb.rawQuery(query, null);
 
         Game game = new Game();
 
@@ -185,9 +202,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "Select * FROM " + TABLE_GAMES + " WHERE " + COLUMN_ID
                 + " =  \"" + id + "\"";
 
-        db = this.getWritableDatabase();
+        mDb = this.getWritableDatabase();
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = mDb.rawQuery(query, null);
 
         Game game = new Game();
 
@@ -216,57 +233,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean deleteAll() {
-        boolean result = true;
-
-        String query = "Select * FROM " + TABLE_GAMES;
-
-        Cursor cursor = getAllGames();
-
-        while (!cursor.isAfterLast()){
-            String name = cursor.getString(1);
-            if (!deleteGame(name)){
-                result = false;
-            }
-            cursor.moveToNext();
-        }
-        cursor.close();
-        return result;
+        mDb = this.getWritableDatabase();
+        return mDb.delete(TABLE_GAMES, null, null) > 0;
     }
 
     public boolean deleteGame(String game_name){
-        boolean result = false;
-
-        String query = "Select * FROM " + TABLE_GAMES + " WHERE " + COLUMN_GAME_NAME
-                + " = \"" + game_name + "\"";
-
-        db = this.getWritableDatabase();
-
-        Cursor cursor = db.rawQuery(query, null);
-
-        Game game = new Game();
-
-        if (cursor.moveToFirst()){
-            game.set_id(Integer.parseInt(cursor.getString(0)));
-            db.delete(TABLE_GAMES, COLUMN_ID + " = ?",
-                    new String[] { String.valueOf(game.get_id()) });
-            cursor.close();
-            result = true;
-        }
-        closeDB();
-        cursor.close();
-        return result;
+        mDb = this.getWritableDatabase();
+        String whereClause = COLUMN_GAME_NAME + "=?";
+        String[] whereArgs = new String[] { game_name };
+        return mDb.delete(TABLE_GAMES, whereClause, whereArgs) > 0;
     }
 
     public int getGameCount() {
-        db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_GAMES, null);
-
-        return cursor.getCount();
+        mDb = getReadableDatabase();
+        Cursor cursor = mDb.rawQuery("SELECT * FROM " + TABLE_GAMES, null);
+        int count = cursor.getCount();
+        cursor.close();
+        return count;
     }
 
     public Cursor getAllGames() {
-        db = getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_GAMES + " ORDER BY "
+        mDb = getReadableDatabase();
+        Cursor cursor = mDb.rawQuery("SELECT * FROM " + TABLE_GAMES + " ORDER BY "
                 + COLUMN_GAME_NAME, null);
 
         if (cursor != null) {
@@ -331,7 +319,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (players.isEmpty() && time.isEmpty() && rating.isEmpty() && mechanic.isEmpty()){
             cursor = getAllGames();
         } else {
-            db = getReadableDatabase();
+            mDb = getReadableDatabase();
 
             String _players_min, _players_max, _time, _rating;
             _players_min = (players.isEmpty()) ? "0" : players;
@@ -340,7 +328,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             _rating = (rating.isEmpty()) ? "0" : rating;
 
             String[] selectionArgs = {_players_min, _players_max, _time, _rating};
-            cursor = db.query(TABLE_GAMES, null,
+            cursor = mDb.query(TABLE_GAMES, null,
                     COLUMN_MAX_PLAYERS + " >=? AND " +
                             COLUMN_MIN_PLAYERS + " <=? AND " +
                             COLUMN_MAX_PLAY_TIME + " <=? AND " +
@@ -355,9 +343,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String query = "Select 1 FROM " + TABLE_GAMES + " WHERE " + fieldName
                 + " = \"" + value + "\"";
 
-        db = this.getReadableDatabase();
+        mDb = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(query, null);
+        Cursor cursor = mDb.rawQuery(query, null);
         boolean exists = (cursor.getCount() > 0);
         closeDB();
         cursor.close();

@@ -111,6 +111,8 @@ public class TestListView extends BaseActivity {
     private void removeGames() {
         dbHandler = DatabaseHelper.getInstance(this);
 //        dbHandler = new DBHandler(this, null, null, DBHandler.DATABASE_VERSION);
+//        dbHandler.deleteAll();
+//        showToast("Delete successful!");
         if (!dbHandler.deleteAll()) {
             showToast("Unable to remove 1 or more games");
         } else {
@@ -178,11 +180,13 @@ public class TestListView extends BaseActivity {
                 public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
                     switch (item.getItemId()) {
                         case R.id.add:
+
                             SparseBooleanArray selected = adapter.getmSelectedItemsIds();
                             List<Game> gameList = new ArrayList<Game>();
                             for (int i = (selected.size() - 1); i >= 0; i--){
                                 Game selectedGame = adapter.getItem(selected.keyAt(i));
-                                adapter.addFromXml(selectedGame);
+                                gameList.add(selectedGame);
+//                                adapter.addFromXml(selectedGame);
                                 adapter.remove(selectedGame);
 //                                String query_url = Constants.URL_BGG_ID_SEARCH
 //                                        + selectedGame.get_bgg_id()
@@ -200,6 +204,7 @@ public class TestListView extends BaseActivity {
 //                                dbHandler.addGameBulk(gameList);
 
                             }
+                            dbHandler.addGameBulk(gameList, false);
                             mode.finish();
                             return true;
                         case R.id.select_all:
