@@ -31,11 +31,12 @@ public class GameCursorAdapter extends CursorAdapter {
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ImageView imageView = (ImageView) view.findViewById(R.id.adapter_imageView);
-        TextView  textView_title  = (TextView)  view.findViewById(R.id.adapter_textView_title);
-        TextView  textView_players  = (TextView)  view.findViewById(R.id.adapter_textView_players);
-        TextView  textView_time  = (TextView)  view.findViewById(R.id.adapter_textView_play_time);
-        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.adapter_ratingBar);
+        ImageView imageView = (ImageView) view.findViewById(R.id.adapterItem_image);
+        TextView  textView_title  = (TextView)  view.findViewById(R.id.adapterItem_name);
+        TextView  textView_year = (TextView) view.findViewById(R.id.adapterItem_year);
+        TextView  textView_players  = (TextView)  view.findViewById(R.id.adapterItem_players);
+        TextView  textView_time  = (TextView)  view.findViewById(R.id.adapterItem_play_time);
+        RatingBar ratingBar = (RatingBar) view.findViewById(R.id.adapterItem_ratingBar);
 
         // Get the data
         String name = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_GAME_NAME));
@@ -47,11 +48,15 @@ public class GameCursorAdapter extends CursorAdapter {
         textView_players.setText(get_players(cursor));
         textView_time.setText(get_time(cursor));
         ratingBar.setRating(Float.parseFloat(get_rating(cursor)));
+        textView_year.setText(get_year(cursor));
+        textView_year.setVisibility(View.GONE);
     }
 
     private String get_rating(Cursor cursor) {
-        String rating = cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_RATING));
-        return rating;
+        return cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_RATING));
+    }
+    private String get_year(Cursor cursor){
+        return cursor.getString(cursor.getColumnIndexOrThrow(Constants.COLUMN_YEAR));
     }
 
     private String get_time(Cursor cursor) {

@@ -11,6 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -31,7 +33,7 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
     LayoutInflater inflater;
     List<Game> gameList;
     private SparseBooleanArray mSelectedItemsIds;
-    DatabaseHelper dbHandler = DatabaseHelper.getInstance(getContext());
+//    DatabaseHelper dbHandler = DatabaseHelper.getInstance(getContext());
 
     public GameArrayAdapter(Context context, List<Game> games) {
         super(context, 0, games);
@@ -46,7 +48,9 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
     }
 
     private class ViewHolder {
-        TextView name, year;
+        TextView name, year, players, playTime;
+        ImageView image;
+        RatingBar ratingBar;
     }
 
     @Override
@@ -55,10 +59,14 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
 
         if (view == null) {
             holder = new ViewHolder();
-            view = inflater.inflate(R.layout.adapter_item_simple, null);
+            view = inflater.inflate(R.layout.adapter_item, null);
 
-            holder.name = (TextView) view.findViewById(R.id.simpleAdapterItem_name);
-            holder.year = (TextView) view.findViewById(R.id.simpleAdapterItem_year);
+            holder.name         = (TextView) view.findViewById(R.id.adapterItem_name);
+            holder.year         = (TextView) view.findViewById(R.id.adapterItem_year);
+            holder.players      = (TextView) view.findViewById(R.id.adapterItem_players);
+            holder.playTime     = (TextView) view.findViewById(R.id.adapterItem_play_time);
+            holder.image        = (ImageView) view.findViewById(R.id.adapterItem_image);
+            holder.ratingBar    = (RatingBar) view.findViewById(R.id.adapterItem_ratingBar);
 
             view.setTag(holder);
         } else {
@@ -66,96 +74,131 @@ public class GameArrayAdapter extends ArrayAdapter<Game> {
         }
 
         holder.name.setText(gameList.get(position).get_name());
+        holder.year.setText(get_year(position, holder));
+        holder.players.setText(get_players(position));
+        holder.playTime.setText(get_play_time(position));
+//        holder.image        = (ImageView) view.findViewById(R.id.adapterItem_image);
+        holder.ratingBar.setRating((Float.parseFloat(String.valueOf(gameList.get(position).get_rating()))));
+
+        return view;
+    }
+
+    private String get_play_time(int position) {
+        String play_time_min, play_time_max, players;
+        play_time_min = String.valueOf(gameList.get(position).get_min_play_time());
+        play_time_max = String.valueOf(gameList.get(position).get_max_play_time());
+
+        if (play_time_max.equals(play_time_min)) {
+            players = play_time_min;
+        } else {
+            players = play_time_min + "-" + play_time_max;
+        }
+        return players;
+    }
+
+    private String get_players(int position) {
+        String players_min, players_max, players;
+        players_min = String.valueOf(gameList.get(position).get_min_players());
+        players_max = String.valueOf(gameList.get(position).get_max_players());
+
+        if (players_max.equals(players_min)) {
+            players = players_min;
+        } else {
+            players = players_min + "-" + players_max;
+        }
+        return players;
+    }
+
+    private String get_year(int position, ViewHolder holder) {
         String year = String.valueOf(gameList.get(position).get_year());
         if (year.equals("0")){
             holder.year.setVisibility(View.GONE);
         } else {
             holder.year.setText(year);
         }
-
-        return view;
+        return year;
     }
 
-    public void addFromXml(Game object) {
-        String query_url = Constants.URL_BGG_ID_SEARCH + object.get_bgg_id() + Constants.URL_STATS;
-        new DownLoadXmlTask().execute(query_url);
-    }
+//    public void addFromXml(Game object) {
+//        String query_url = Constants.URL_BGG_ID_SEARCH + object.get_bgg_id() + Constants.URL_STATS;
+//        new DownLoadXmlTask().execute(query_url);
+//    }
 
-    private class DownLoadXmlTask extends AsyncTask<String, Void, Game> {
-        @Override
-        protected Game doInBackground(String... urls) {
-            try {
-                return loadXmlFromUrl(urls[0]);
-            } catch (IOException e) {
-                return new Game("N/A", "Unable to load data: IOException");
-            } catch (XmlPullParserException e) {
-                return new Game("N/A", "Unable to load data: XmlPullParserException");
-            }
-        }
+//    private class DownLoadXmlTask extends AsyncTask<String, Void, Game> {
+//        @Override
+//        protected Game doInBackground(String... urls) {
+//            try {
+//                return loadXmlFromUrl(urls[0]);
+//            } catch (IOException e) {
+//                return new Game("N/A", "Unable to load data: IOException");
+//            } catch (XmlPullParserException e) {
+//                return new Game("N/A", "Unable to load data: XmlPullParserException");
+//            }
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Game g) {
+//            final Game game_to_add = g;
+//            dbHandler.addGame(game_to_add);
+//            // Set page content
+//            new ImageLoadTask(g.get_image_url(), new AsyncResponse() {
+//                @Override
+//                public void processFinish(Bitmap output) {
+//                    saveImageInternal(output, String.valueOf(game_to_add.get_bgg_id()));
+//                }
+//            }).execute();
+//        }
+//    }
 
-        @Override
-        protected void onPostExecute(Game g) {
-            final Game game_to_add = g;
-            dbHandler.addGame(game_to_add);
-            // Set page content
-            new ImageLoadTask(g.get_image_url(), new AsyncResponse() {
-                @Override
-                public void processFinish(Bitmap output) {
-                    saveImageInternal(output, String.valueOf(game_to_add.get_bgg_id()));
-                }
-            }).execute();
-        }
-    }
-
-    private boolean saveImageInternal(Bitmap image, String bgg_id) {
-        String file_name = bgg_id + Constants.FILE_TYPE;
-        try {
-            // Compress the image to write to OutputStream
-            FileOutputStream outputStream = context.openFileOutput(file_name, Context.MODE_PRIVATE);
-
-            // Write the bitmap to the output stream
-            image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            outputStream.close();
-
-            return true;
-        } catch (Exception e) {
-            Log.e("saveImageInteral()", e.getMessage());
-            return false;
-        }
-    }
+//    private boolean saveImageInternal(Bitmap image, String bgg_id) {
+//        String file_name = bgg_id + Constants.FILE_TYPE;
+//        try {
+//            // Compress the image to write to OutputStream
+//            FileOutputStream outputStream = context.openFileOutput(file_name, Context.MODE_PRIVATE);
+//
+//            // Write the bitmap to the output stream
+//            image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+//            outputStream.close();
+//
+//            return true;
+//        } catch (Exception e) {
+//            Log.e("saveImageInteral()", e.getMessage());
+//            return false;
+//        }
+//    }
 
 
 
-    private Game loadXmlFromUrl(String url_string) throws XmlPullParserException, IOException {
-        InputStream stream = null;
-        BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
-        List<Game> games = null;
-
-        try {
-            stream = downloadUrl(url_string);
-            games = boardGameGeekXmlParser.parse(stream);
-        } finally {
-            if (stream != null){
-                stream.close();
-            }
-        }
-        return games.get(0);
-    }
+//    private Game loadXmlFromUrl(String url_string) throws XmlPullParserException, IOException {
+//        InputStream stream = null;
+//        BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
+//        List<Game> games = null;
+//
+//        try {
+//            stream = downloadUrl(url_string);
+//            games = boardGameGeekXmlParser.parse(stream);
+//        } finally {
+//            if (stream != null){
+//                stream.close();
+//            }
+//        }
+//        return games.get(0);
+//    }
 
     // Given a string representation of a URL, sets up a connection and gets
     // an input stream.
-    private InputStream downloadUrl(String url_string) throws IOException {
-        URL url = new URL(url_string);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setReadTimeout(10000 /* milliseconds */);
-        conn.setConnectTimeout(15000 /* milliseconds */);
-        conn.setRequestMethod("GET");
-        conn.setDoInput(true);
-        // Starts the query
-        conn.connect();
-        InputStream stream = conn.getInputStream();
-        return stream;
-    }
+//    private InputStream downloadUrl(String url_string) throws IOException {
+//        URL url = new URL(url_string);
+//        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//        conn.setReadTimeout(10000 /* milliseconds */);
+//        conn.setConnectTimeout(15000 /* milliseconds */);
+//        conn.setRequestMethod("GET");
+//        conn.setDoInput(true);
+//        // Starts the query
+//        conn.connect();
+//        InputStream stream = conn.getInputStream();
+//        return stream;
+//    }
 
     public void remove(Game object) {
         gameList.remove(object);

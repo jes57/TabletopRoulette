@@ -111,7 +111,7 @@ public class SearchListView extends BaseActivity {
             progressDialog.dismiss();
             gameObjectsArrayList = games;
             final GameArrayAdapter adapter = new GameArrayAdapter(SearchListView.this,
-                    R.layout.adapter_item_simple, gameObjectsArrayList);
+                    R.layout.adapter_item, gameObjectsArrayList);
 
             // Set the ListView
             collectionListView = (ListView) findViewById(R.id.collectionListView);
@@ -138,17 +138,32 @@ public class SearchListView extends BaseActivity {
         Log.i("loadXmlFromUrl...", "Start of loadXmlFromUrl");
         InputStream stream = null;
         BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
-        List<Game> games = null;
+        List<Game> gameList = null, gameListFull = null;
+        String gameIds = "";
 
         try {
             stream = downloadUrl(url_string);
-            games = boardGameGeekXmlParser.parse_by_name(stream);
+            gameList = boardGameGeekXmlParser.parse_by_name(stream);
         } finally {
             if (stream != null){
                 stream.close();
             }
         }
-        return games;
+
+        // Create a string of all the game game IDs separated by a comma
+        // It adds a comma to the end of the list but this doesn't hurt the query
+        for ( Game g : gameList ){ gameIds += g.get_bgg_id() + ","; }
+
+        // Query the BGG database for a list of all the game data
+        try {
+            String url = Constants.URL_BGG_ID_SEARCH + gameIds + Constants.URL_STATS;
+            stream = downloadUrl(url);
+
+            gameListFull = boardGameGeekXmlParser.parse(stream);
+        } finally {
+            if (stream != null) stream.close();
+        }
+        return gameListFull;
     }
 
     // Given a string representation of a URL, sets up a connection and gets

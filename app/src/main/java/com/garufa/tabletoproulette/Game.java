@@ -90,6 +90,9 @@ public class Game {
     public int      get_bgg_id()        { return _bgg_id; }
     public int      get_year()          { return _year; }
     public double   get_rating()        { return _rating; }
+    public String   get_bgg_url_id()    {
+        return Constants.URL_BGG_ID_SEARCH + _bgg_id + Constants.URL_STATS;
+    }
 
     // Get the image from internal storage
     public Bitmap get_thumbnail(Context context) {

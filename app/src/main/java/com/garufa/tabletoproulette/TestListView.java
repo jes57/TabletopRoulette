@@ -22,8 +22,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
+import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -138,11 +141,11 @@ public class TestListView extends BaseActivity {
                 return loadXmlFromUrl(urls[0]);
             } catch (IOException e) {
                 List<Game> games = new ArrayList<Game>();
-                games.add(new Game("N/A", "Unable to load data: IOException"));
+                games.add(new Game("Server Temporarily Unavailable", "Unable to load data: IOException"));
                 return games;
             } catch (XmlPullParserException e) {
                 List<Game> games = new ArrayList<Game>();
-                games.add(new Game("N/A", "Unable to load data: XmlPullParserException"));
+                games.add(new Game("Unable to load data: XmlPullParserException", "Unable to load data: XmlPullParserException"));
                 return games;
             }
         }
@@ -151,7 +154,7 @@ public class TestListView extends BaseActivity {
         protected void onPostExecute(List<Game> games) {
             gameObjectsArrayList = checkForDuplicates(games);
             final GameArrayAdapter adapter = new GameArrayAdapter(TestListView.this,
-                    R.layout.adapter_item_simple, gameObjectsArrayList);
+                    R.layout.adapter_item, gameObjectsArrayList);
 
             // Set the ListView
             collectionListView = (ListView) findViewById(R.id.collectionListView);
@@ -186,10 +189,10 @@ public class TestListView extends BaseActivity {
                             for (int i = (selected.size() - 1); i >= 0; i--){
                                 Game selectedGame = adapter.getItem(selected.keyAt(i));
                                 gameList.add(selectedGame);
-                                adapter.addFromXml(selectedGame);
+//                                adapter.addFromXml(selectedGame);
                                 adapter.remove(selectedGame);
                             }
-//                            dbHandler.addGameBulk(gameList, false);
+                            dbHandler.addGameBulk(gameList, false);
                             mode.finish();
                             return true;
                         case R.id.select_all:
@@ -225,96 +228,35 @@ public class TestListView extends BaseActivity {
         }
     }
 
-    private List<Game> checkForDuplicates(List<Game> games) {
-        dbHandler = DatabaseHelper.getInstance(this);
-        for (Game g : new ArrayList<Game>(games)){
-            if (dbHandler.gameExists(Constants.COLUMN_GAME_NAME,
-                    g.get_name())){
-                games.remove(g);
-            }
-        }
-        return games;
-    }
-
-    private class InsertXmlTask extends AsyncTask<String, Void, Game> {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            showProgress("Inserting...");
-        }
-        @Override
-        protected Game doInBackground(String... urls) {
-            try {
-                return insertXmlFromUrl(urls[0]);
-            } catch (IOException e) {
-                return new Game("N/A", "Unable to load data: IOException");
-            } catch (XmlPullParserException e) {
-                return new Game("N/A", "Unable to load data: XmlPullParserException");
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Game g) {
-            final Game game = g;
-            dbHandler.addGame(game);
-            new ImageLoadTask(String.valueOf(game.get_bgg_id()), new AsyncResponse() {
-                @Override
-                public void processFinish(Bitmap output) {
-                    saveImageInternal(output, String.valueOf(game.get_bgg_id()));
-                    dismissProgress();
-                }
-            });
-    }
-
-}
-
-    private boolean saveImageInternal(Bitmap image, String bgg_id) {
-        String file_name = bgg_id + Constants.FILE_TYPE;
-        try {
-            // Compress the image to write to OutputStream
-            FileOutputStream outputStream = openFileOutput(file_name, Context.MODE_PRIVATE);
-
-            // Write the bitmap to the output stream
-            image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            outputStream.close();
-
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private Game insertXmlFromUrl(String url_string) throws XmlPullParserException, IOException {
-        Log.i("loadXmlFromUrl...", "Start of loadXmlFromUrl");
-        InputStream stream = null;
-        BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
-        List<Game> games = null;
-
-        try {
-            stream = downloadUrl(url_string);
-            games = boardGameGeekXmlParser.parse(stream);
-        } finally {
-            if (stream != null){
-                stream.close();
-            }
-        }
-        return games.get(0);
-    }
-
     private List<Game> loadXmlFromUrl(String url_string) throws XmlPullParserException, IOException {
         InputStream stream = null;
+        String gameIds = "";
         BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
-        List<Game> games = null;
+        List<Game> gameList = null, gameListFull = null;
 
+        // Get the list of games from the user collection
         try {
             stream = downloadUrl(url_string);
-            games = boardGameGeekXmlParser.parse_user_collection(stream);
+            gameList = boardGameGeekXmlParser.parse_user_collection(stream);
         } finally {
-            if (stream != null){
-                stream.close();
-            }
+            if (stream != null) stream.close();
         }
-        return games;
+//        return gameList;
+
+        // Create a string of all the game game IDs separated by a comma
+        // It adds a comma to the end of the list but this doesn't hurt the query
+        for ( Game g : gameList ){ gameIds += g.get_bgg_id() + ","; }
+
+        // Query the BGG database for a list of all the game data
+        try {
+            String url = Constants.URL_BGG_ID_SEARCH + gameIds + Constants.URL_STATS;
+            stream = downloadUrl(url);
+
+            gameListFull = boardGameGeekXmlParser.parse(stream);
+        } finally {
+            if (stream != null) stream.close();
+        }
+        return gameListFull;
     }
 
     // Given a string representation of a URL, sets up a connection and gets
@@ -331,4 +273,82 @@ public class TestListView extends BaseActivity {
         InputStream stream = conn.getInputStream();
         return stream;
     }
+
+    private List<Game> checkForDuplicates(List<Game> games) {
+        dbHandler = DatabaseHelper.getInstance(this);
+        for (Game g : new ArrayList<>(games)){
+            if (dbHandler.gameExists(Constants.COLUMN_GAME_NAME,
+                    g.get_name())){
+                games.remove(g);
+            }
+        }
+        return games;
+    }
+
+
+
+//    private boolean saveImageInternal(Bitmap image, String bgg_id) {
+//        String file_name = bgg_id + Constants.FILE_TYPE;
+//        try {
+//            // Compress the image to write to OutputStream
+//            FileOutputStream outputStream = openFileOutput(file_name, Context.MODE_PRIVATE);
+//
+//            // Write the bitmap to the output stream
+//            image.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+//            outputStream.close();
+//
+//            return true;
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
+//    private class InsertXmlTask extends AsyncTask<String, Void, Game> {
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            showProgress("Inserting...");
+//        }
+//        @Override
+//        protected Game doInBackground(String... urls) {
+//            try {
+//                return insertXmlFromUrl(urls[0]);
+//            } catch (IOException e) {
+//                return new Game("N/A", "Unable to load data: IOException");
+//            } catch (XmlPullParserException e) {
+//                return new Game("N/A", "Unable to load data: XmlPullParserException");
+//            }
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Game g) {
+//            final Game game = g;
+//            dbHandler.addGame(game);
+//            new ImageLoadTask(String.valueOf(game.get_bgg_id()), new AsyncResponse() {
+//                @Override
+//                public void processFinish(Bitmap output) {
+//                    saveImageInternal(output, String.valueOf(game.get_bgg_id()));
+//                    dismissProgress();
+//                }
+//            });
+//        }
+//
+//    }
+//
+//    private Game insertXmlFromUrl(String url_string) throws XmlPullParserException, IOException {
+//        Log.i("loadXmlFromUrl...", "Start of loadXmlFromUrl");
+//        InputStream stream = null;
+//        BoardGameGeekXmlParser boardGameGeekXmlParser = new BoardGameGeekXmlParser();
+//        List<Game> games = null;
+//
+//        try {
+//            stream = downloadUrl(url_string);
+//            games = boardGameGeekXmlParser.parse(stream);
+//        } finally {
+//            if (stream != null){
+//                stream.close();
+//            }
+//        }
+//        return games.get(0);
+//    }
+
 }

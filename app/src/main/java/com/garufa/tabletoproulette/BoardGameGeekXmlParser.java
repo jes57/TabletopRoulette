@@ -5,6 +5,7 @@ import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,7 +42,7 @@ public class BoardGameGeekXmlParser {
 
     public List<Game> parse_user_collection(InputStream in) throws XmlPullParserException, IOException {
         try {
-            XmlPullParser parser = Xml.newPullParser();
+            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();//Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
@@ -132,7 +133,7 @@ public class BoardGameGeekXmlParser {
 
     public List<Game> parse(InputStream in) throws XmlPullParserException, IOException {
         try {
-            XmlPullParser parser = Xml.newPullParser();
+            XmlPullParser parser = XmlPullParserFactory.newInstance().newPullParser();//Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
             parser.setInput(in, null);
             parser.nextTag();
@@ -164,7 +165,7 @@ public class BoardGameGeekXmlParser {
     private Game readEntry(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "boardgame");
         int bgg_id = 0, min_players = 0, max_players = 0, min_play_time = 0, max_play_time = 0, year = 0;
-        String name = "Unavailable", description = "Unavailable", game_mechanic = null, image_url = null;
+        String name = "Unavailable", description = "Unavailable", game_mechanic = "N/A", image_url = "N/A";
         double rating = 0;
 
         bgg_id = Integer.parseInt(parser.getAttributeValue(ns, "objectid"));
